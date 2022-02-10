@@ -8,6 +8,12 @@
 #!README.md
 #!.gitignore
 
+## Robot Localization
+**/doc/html
+**/*.cproject
+**/*.project
+**/*.settings
+
 
 ###
 
