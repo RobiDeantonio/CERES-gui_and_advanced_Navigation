@@ -162,7 +162,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 			elif myapp.ui.verticalSlider.value()==3:
 				poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
 				procs.append(["poseController", poseController])
-				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path, '__name:=ceres_PathReader']) 
+				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")
@@ -573,9 +573,9 @@ def refreshTrajectory():
 
 def readPath():
 	global myapp, var
-	file=open(myapp.path, "r")
+	file=open(myapp.path[0], "r")
 	l=file.readline()
-	origins=[-1.0,-1.0,-1.0] # Origin: Lat, Long, Psi
+	origins=[0.0, 0.0, 0.0] # Origin: Lat, Long, Psi
 	originsFlag=[False,False,False]
 	points=[] # [[X, Y, Psi]]
 
@@ -598,7 +598,8 @@ def readPath():
 
 		l=file.readline()
 	output=[[],[]]
-	if originsFlag[0]==False:
+	global dX,dY,dAngle
+	if originsFlag[0]==True:
 		dX = 0
 		dY = 0
 	else:
@@ -611,10 +612,11 @@ def readPath():
 		if sqrt(pow(dX,2)+pow(dY,2))>10:
 			rospy.logwarn("[GUI] The robot is far from the Path Origin, PathReader may refuse Path file!")
 
-	if originsFlag[2]==False:
+	if originsFlag[2]==True:
 		dAngle = 0
 	else:
 		dAngle = (origins[2]-var[3][3])# Calcul IMU Angle
+		
 	for i in points:
 		X = i[0]
 		Y = i[1]

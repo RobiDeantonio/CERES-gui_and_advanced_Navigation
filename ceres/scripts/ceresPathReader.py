@@ -77,7 +77,7 @@ else:
 l=file.readline()
 
 # Initialize parameters
-origins=[-1.0,-1.0,-1.0] # Origin: Lat, Long, Psi
+origins=[0.0,0.0,0.0] # Origin: Lat, Long, Psi
 originsFlag=[False,False,False]
 frequency=-1
 

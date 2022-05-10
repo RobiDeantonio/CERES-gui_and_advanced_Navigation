@@ -121,7 +121,7 @@ if __name__=='__main__':
 		mode=0
 		length = 5
 	# 
-	elif (len(sys.argv) != 3) or (not (unicode(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>2 or float(sys.argv[2])<0:
+	elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>2 or float(sys.argv[2])<0:
 		raise Exception("Usage error: wrong parameters!")
 	else:
 		mode = int(sys.argv[1])
