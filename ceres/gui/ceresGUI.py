@@ -527,6 +527,13 @@ def refreshData():
 	pixmap = pixmap.transformed(transform, Qt.SmoothTransformation)
 	myapp.ui.label_74.setPixmap(pixmap)
 	
+	img = QImage()
+	img.load(os.path.join(path, 'ceres.png'))
+	pixmap = QPixmap(img)
+	transform = QTransform().rotate((var[19][3]*180.0/3.14))
+	pixmap = pixmap.transformed(transform, Qt.SmoothTransformation)
+	myapp.ui.label_103.setPixmap(pixmap)
+
 	myapp.ui.label_75.setText(str(round(var[3][3]*180.0/3.14,1))+" deg")
 	myapp.ui.label_76.setText(str((round(var[18][3]*180.0/3.14,1)+180.0)%360)+" deg")
 	myapp.ui.label_77.setText(str(round(-var[19][3]*180.0/3.14,1))+" deg")
