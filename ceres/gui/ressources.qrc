@@ -9,6 +9,6 @@
         <file>roll.png</file>
         <file>pitch.png</file>
         <file>heading.png</file>
-        <file>ceres1.png</file>    
+        <file>ceres.png</file>    
     </qresource>
 </RCC>

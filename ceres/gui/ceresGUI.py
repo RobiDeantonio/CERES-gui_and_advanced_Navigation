@@ -42,9 +42,14 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.pushButton_2.clicked.connect(self.connectRCArduino)
 		self.ui.pushButton_5.clicked.connect(self.startPathGenerator)
 		self.ui.pushButton_6.clicked.connect(self.stopPathGenerator)
+
 		self.ui.pushButton_7.clicked.connect(self.detectIMU)
 		self.ui.pushButton_8.clicked.connect(self.detectArduinoRC)
 		self.ui.pushButton_9.clicked.connect(self.detectMainArduino)
+		self.ui.pushButton_19.clicked.connect(self.detectArduinoAct_X)
+		self.ui.pushButton_23.clicked.connect(self.detectArduinoAct_Y)
+		self.ui.pushButton_25.clicked.connect(self.detectArduinoAct_Z)
+
 		self.ui.pushButton_4.clicked.connect(self.loadPath)
 		
 		self.ui.verticalSlider.valueChanged.connect(refreshTrajectory)
@@ -136,7 +141,83 @@ class CeresApplication(QtWidgets.QMainWindow):
 				i[1].kill()
 				procs.pop(procs.index(i))
 				break
-				
+	
+	def connectArduinoAct_X(self):
+		global procs
+		self.ui.pushButton_18.setText("Disconnect")
+		self.ui.pushButton_18.clicked.disconnect(self.connectArduinoAct_X)
+		self.ui.pushButton_18.clicked.connect(self.disconnectArduinoAct_X)
+		self.ui.pushButton_19.setEnabled(False)
+		ArduinoAct_X = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_11.currentText(), '__name:=ceres_ArduinoAct_X']) 
+		procs.append(["ArduinoAct_X", ArduinoAct_X])
+		self.ui.label_116.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.label_117.setText("<font color='#00AA00'>Connected</font>")
+		
+	def disconnectArduinoAct_X(self):
+		global procs
+		self.ui.label_116.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.label_117.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.pushButton_19.setEnabled(True)
+		self.ui.pushButton_18.setText("Connect")
+		self.ui.pushButton_18.clicked.disconnect(self.disconnectArduinoAct_X)
+		self.ui.pushButton_18.clicked.connect(self.connectArduinoAct_X)
+		for i in procs:
+			if i[0]=="ArduinoAct_X":
+				i[1].kill()
+				procs.pop(procs.index(i))
+				break			
+	
+	def connectArduinoAct_Y(self):
+		global procs
+		self.ui.pushButton_22.setText("Disconnect")
+		self.ui.pushButton_22.clicked.disconnect(self.connectArduinoAct_Y)
+		self.ui.pushButton_22.clicked.connect(self.disconnectArduinoAct_Y)
+		self.ui.pushButton_23.setEnabled(False)
+		ArduinoAct_Y = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_13.currentText(), '__name:=ceres_ArduinoAct_Y']) 
+		procs.append(["ArduinoAct_Y", ArduinoAct_Y])
+		self.ui.label_124.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.label_130.setText("<font color='#00AA00'>Connected</font>")
+		
+	def disconnectArduinoAct_Y(self):
+		global procs
+		self.ui.label_124.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.label_130.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.pushButton_23.setEnabled(True)
+		self.ui.pushButton_22.setText("Connect")
+		self.ui.pushButton_22.clicked.disconnect(self.disconnectArduinoAct_Y)
+		self.ui.pushButton_22.clicked.connect(self.connectArduinoAct_Y)
+		for i in procs:
+			if i[0]=="ArduinoAct_Y":
+				i[1].kill()
+				procs.pop(procs.index(i))
+				break
+	
+	def connectArduinoAct_Z(self):
+		global procs
+		self.ui.pushButton_24.setText("Disconnect")
+		self.ui.pushButton_24.clicked.disconnect(self.connectArduinoAct_Z)
+		self.ui.pushButton_24.clicked.connect(self.disconnectArduinoAct_Z)
+		self.ui.pushButton_25.setEnabled(False)
+		ArduinoAct_Z = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_14.currentText(), '__name:=ceres_ArduinoAct_Z']) 
+		procs.append(["ArduinoAct_Z", ArduinoAct_Z])
+		self.ui.label_127.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.label_131.setText("<font color='#00AA00'>Connected</font>")
+		
+	def disconnectArduinoAct_Z(self):
+		global procs
+		self.ui.label_127.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.label_131.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.pushButton_25.setEnabled(True)
+		self.ui.pushButton_24.setText("Connect")
+		self.ui.pushButton_24.clicked.disconnect(self.disconnectArduinoAct_Z)
+		self.ui.pushButton_24.clicked.connect(self.connectArduinoAct_Z)
+		for i in procs:
+			if i[0]=="ArduinoAct_Z":
+				i[1].kill()
+				procs.pop(procs.index(i))
+				break
+
+
 	def startPathGenerator(self):
 		global myapp, procs
 		flag = True
@@ -262,6 +343,65 @@ class CeresApplication(QtWidgets.QMainWindow):
 				L.append(ports[i].device)
 		myapp.ui.comboBox_6.addItems(L)
 
+
+	def detectArduinoAct_X(self):
+		global myapp
+		
+		myapp.ui.comboBox_11.clear()
+		ports = list_ports.comports()
+		n=-1
+		for i in range(len(ports)):
+			if ports[i].description == "Arduino UNO R3":
+				n=i
+				break
+		#L=QStringList()
+		L = []
+		if n>-1:
+			L.append(ports[n].device)
+		for i in range(len(ports)):
+			if i!=n:
+				L.append(ports[i].device)
+		myapp.ui.comboBox_11.addItems(L)
+
+
+	def detectArduinoAct_Y(self):
+		global myapp
+		
+		myapp.ui.comboBox_13.clear()
+		ports = list_ports.comports()
+		n=-1
+		for i in range(len(ports)):
+			if ports[i].description == "Arduino UNO R3":
+				n=i
+				break
+		#L=QStringList()
+		L = []
+		if n>-1:
+			L.append(ports[n].device)
+		for i in range(len(ports)):
+			if i!=n:
+				L.append(ports[i].device)
+		myapp.ui.comboBox_13.addItems(L)
+
+	def detectArduinoAct_Z(self):
+		global myapp
+		
+		myapp.ui.comboBox_14.clear()
+		ports = list_ports.comports()
+		n=-1
+		for i in range(len(ports)):
+			if ports[i].description == "Arduino UNO R3":
+				n=i
+				break
+		#L=QStringList()
+		L = []
+		if n>-1:
+			L.append(ports[n].device)
+		for i in range(len(ports)):
+			if i!=n:
+				L.append(ports[i].device)
+		myapp.ui.comboBox_14.addItems(L)
+
 def refreshProcs():
 	global procs, myapp
 	updateLog()
@@ -295,6 +435,36 @@ def refreshProcs():
 				myapp.ui.pushButton_2.clicked.disconnect(myapp.disconnectRCArduino)
 				myapp.ui.pushButton_2.clicked.connect(myapp.connectRCArduino)
 				myapp.ui.pushButton_8.setEnabled(True)
+				break
+
+			elif  i[0] == "ArduinoAct_X":
+				procs.pop(procs.index(i))
+				myapp.ui.label_116.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.label_117.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.pushButton_18.setText("Connect")
+				myapp.ui.pushButton_18.clicked.disconnect(myapp.disconnectArduinoAct_X)
+				myapp.ui.pushButton_18.clicked.connect(myapp.connectArduinoAct_X)
+				myapp.ui.pushButton_19.setEnabled(True)
+				break
+
+			elif  i[0] == "ArduinoAct_Y":
+				procs.pop(procs.index(i))
+				myapp.ui.label_124.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.label_130.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.pushButton_22.setText("Connect")
+				myapp.ui.pushButton_22.clicked.disconnect(myapp.disconnectArduinoAct_Y)
+				myapp.ui.pushButton_22.clicked.connect(myapp.connectArduinoAct_Y)
+				myapp.ui.pushButton_23.setEnabled(True)
+				break
+
+			elif  i[0] == "ArduinoAct_Z":
+				procs.pop(procs.index(i))
+				myapp.ui.label_127.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.label_131.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.pushButton_24.setText("Connect")
+				myapp.ui.pushButton_24.clicked.disconnect(myapp.disconnectArduinoAct_Z)
+				myapp.ui.pushButton_24.clicked.connect(myapp.connectArduinoAct_Z)
+				myapp.ui.pushButton_25.setEnabled(True)
 				break
 				
 			elif  i[0] == "PathGenerator" or i[0]=="PathReader":
