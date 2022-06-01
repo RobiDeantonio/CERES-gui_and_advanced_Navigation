@@ -17,10 +17,10 @@ from qOSM.common import QOSM
 sys.path.append("/root/catkin_ws/src")
 from ceres.msg import CeresArduinoLogging
 from ceres.msg import CeresRC
+from std_msgs.msg import Float32
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import NavSatFix
-from sensor_msgs.msg import Imu
+from sensor_msgs.msg import NavSatFix, Imu
 from rosgraph_msgs.msg import Log
 from math import cos, sin, sqrt
 from serial.tools import list_ports
@@ -55,6 +55,26 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.verticalSlider.valueChanged.connect(refreshTrajectory)
 		self.ui.doubleSpinBox.valueChanged.connect(refreshTrajectory)
 		self.ui.doubleSpinBox_2.valueChanged.connect(refreshTrajectory)
+
+		## Actuators
+		global X
+		global Y
+		global Z
+		X=0
+		Y=0
+		Z=0
+
+		self.Salir.clicked.connect(self.Salido)
+		self.RETROCEDERX.clicked.connect(self.RETROCEDERXX)
+		self.RETROCEDERY.clicked.connect(self.RETROCEDERYY)
+		self.RETROCEDERZ.clicked.connect(self.RETROCEDERZZ)
+		self.AVANZARX.clicked.connect(self.AVANZARXX)
+		self.AVANZARY.clicked.connect(self.AVANZARYY)
+		self.AVANZARZ.clicked.connect(self.AVANZARZZ)
+		self.PARADAX.clicked.connect(self.STOPX)
+		self.PARADAY.clicked.connect(self.STOPY)
+		self.PARADAZ.clicked.connect(self.STOPZ)
+
 
 	def loadPath(self):
 		self.path = QFileDialog.getOpenFileName(self, 'Open Path File', '',"CERES Path Files (*.path);;All Files (*)")
@@ -216,6 +236,48 @@ class CeresApplication(QtWidgets.QMainWindow):
 				i[1].kill()
 				procs.pop(procs.index(i))
 				break
+
+### Actuators Move
+	def Salido (self):
+		print(1)
+		sys.exit(app.exec_())
+	def AVANZARXX(self):
+		global X
+		X=X+1000
+		ACTUADORX(X)
+	def AVANZARYY(self):
+		global Y
+		Y = Y + 1000
+		ACTUADORY(Y)
+	def AVANZARZZ(self):
+		global Z
+		Z = Z + 1000
+		ACTUADORZ(Z)
+	def STOPX(self):
+		global X
+		X = 0
+		ACTUADORX(X)
+	def STOPY(self):
+		global Y
+		Y = 0
+		ACTUADORY(Y)
+	def STOPZ(self):
+		global Z
+		Z = 0
+		ACTUADORZ(Z)
+
+	def RETROCEDERXX(self):
+		global X
+		X = X - 100
+		ACTUADORX(X)
+	def RETROCEDERYY(self):
+		global Y
+		Y = Y - 1000
+		ACTUADORY(Y)
+	def RETROCEDERZZ(self):
+		global Z
+		Z = Z - 1000
+		ACTUADORZ(Z)
 
 
 	def startPathGenerator(self):
@@ -815,6 +877,36 @@ def calculateCirclePoints(diameter):
 		X.append(diameter/2.0*cos(i*2.0*3.14/1000.0)-diameter/2)
 		Y.append(diameter/2.0*sin(i*2.0*3.14/1000.0))
 	return [X,Y]
+
+def ACTUADORX(paquete):
+    pub = rospy.Publisher("ACTUADORX", Float32, queue_size=10)
+    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+
+def ACTUADORY(paquete):
+    pub = rospy.Publisher("ACTUADORY", Float32, queue_size=10)
+    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+
+def ACTUADORZ(paquete):
+    pub = rospy.Publisher("ACTUADORZ", Float32, queue_size=10)
+    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
 		
 		
 if __name__ == "__main__":
