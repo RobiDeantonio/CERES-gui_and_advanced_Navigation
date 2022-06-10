@@ -884,7 +884,7 @@ def calculateCirclePoints(diameter):
 
 def ACTUADORX(paquete):
     pub = rospy.Publisher("ACTUADORX", Float32, queue_size=10)
-    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rospy.init_node("Ceres_GUI",anonymous=True)
     rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
@@ -894,7 +894,7 @@ def ACTUADORX(paquete):
 
 def ACTUADORY(paquete):
     pub = rospy.Publisher("ACTUADORY", Float32, queue_size=10)
-    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rospy.init_node("Ceres_GUI",anonymous=True)
     rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
@@ -904,7 +904,7 @@ def ACTUADORY(paquete):
 
 def ACTUADORZ(paquete):
     pub = rospy.Publisher("ACTUADORZ", Float32, queue_size=10)
-    rospy.init_node("ACTUADORESPY",anonymous=True)
+    rospy.init_node("Ceres_GUI",anonymous=True)
     rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
