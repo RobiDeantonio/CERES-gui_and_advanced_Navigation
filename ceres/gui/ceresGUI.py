@@ -64,16 +64,16 @@ class CeresApplication(QtWidgets.QMainWindow):
 		Y=0
 		Z=0
 
-		self.Salir.clicked.connect(self.Salido)
-		self.RETROCEDERX.clicked.connect(self.RETROCEDERXX)
-		self.RETROCEDERY.clicked.connect(self.RETROCEDERYY)
-		self.RETROCEDERZ.clicked.connect(self.RETROCEDERZZ)
-		self.AVANZARX.clicked.connect(self.AVANZARXX)
-		self.AVANZARY.clicked.connect(self.AVANZARYY)
-		self.AVANZARZ.clicked.connect(self.AVANZARZZ)
-		self.PARADAX.clicked.connect(self.STOPX)
-		self.PARADAY.clicked.connect(self.STOPY)
-		self.PARADAZ.clicked.connect(self.STOPZ)
+		self.ui.Salir.clicked.connect(self.Salido)
+		self.ui.RETROCEDERX.clicked.connect(self.RETROCEDERXX)
+		self.ui.RETROCEDERY.clicked.connect(self.RETROCEDERYY)
+		self.ui.RETROCEDERZ.clicked.connect(self.RETROCEDERZZ)
+		self.ui.AVANZARX.clicked.connect(self.AVANZARXX)
+		self.ui.AVANZARY.clicked.connect(self.AVANZARYY)
+		self.ui.AVANZARZ.clicked.connect(self.AVANZARZZ)
+		self.ui.PARADAX.clicked.connect(self.STOPX)
+		self.ui.PARADAY.clicked.connect(self.STOPY)
+		self.ui.PARADAZ.clicked.connect(self.STOPZ)
 
 
 	def loadPath(self):
