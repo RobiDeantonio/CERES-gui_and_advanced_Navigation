@@ -40,8 +40,12 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.pushButton.clicked.connect(self.connectIMU)
 		self.ui.pushButton_3.clicked.connect(self.connectMainArduino)
 		self.ui.pushButton_2.clicked.connect(self.connectRCArduino)
+		self.ui.pushButton_18.clicked.connect(self.connectArduinoAct_X)
+		self.ui.pushButton_22.clicked.connect(self.connectArduinoAct_Y)
+		self.ui.pushButton_24.clicked.connect(self.connectArduinoAct_Z)
 		self.ui.pushButton_5.clicked.connect(self.startPathGenerator)
 		self.ui.pushButton_6.clicked.connect(self.stopPathGenerator)
+
 
 		self.ui.pushButton_7.clicked.connect(self.detectIMU)
 		self.ui.pushButton_8.clicked.connect(self.detectArduinoRC)
