@@ -173,28 +173,10 @@ def getContours(img,imgContour):
                         (0, 255, 0), 2)
             return bbox
 
-
-
 ## main loop
 s = 0
 done = False
 kernelC=np.ones((5,5),np.uint8)
-def empty(a):
-    pass
-cv2.namedWindow("HSV")
-cv2.resizeWindow("HSV",640,240)
-cv2.createTrackbar("HUE Min","HSV",0,179,empty)
-cv2.createTrackbar("HUE Max","HSV",179,179,empty)
-cv2.createTrackbar("SAT Min","HSV",0,255,empty)
-cv2.createTrackbar("SAT Max","HSV",255,255,empty)
-cv2.createTrackbar("VALUE Min","HSV",0,255,empty)
-cv2.createTrackbar("VALUE Max","HSV",255,255,empty)
-cv2.createTrackbar("R Min","HSV",0,255,empty)
-cv2.createTrackbar("R Max","HSV",255,255,empty)
-cv2.createTrackbar("G Min","HSV",0,255,empty)
-cv2.createTrackbar("G Max","HSV",255,255,empty)
-cv2.createTrackbar("B Min","HSV",0,255,empty)
-cv2.createTrackbar("B Max","HSV",255,255,empty)
 
 FramesContador=1000
 def drawBox(img,bbox):
@@ -240,8 +222,7 @@ while not done:
     opening = cv2.morphologyEx(mascara, cv2.MORPH_OPEN, kernelC)
     x, y, w, h = cv2.boundingRect(opening)
 
-
-    # canvas
+    ##### CANVAS
 
     ## Distance map
     if int(x+w/2)>639:
@@ -323,46 +304,13 @@ while not done:
         except:
             pass
 
-    #cv2.rectangle(rgb, (x1, y1), (x1 + w1, y1 + h1), (0, 0, 255), 3)
-    #cv2.circle(rgb, (int(x1 + w1 / 2), int(y1 + h1 / 2)), 5, (0, 0, 255))
     cv2.rectangle(rgb, (x, y), (x + w, y + h), (0, 255, 0), 3)
     cv2.circle(rgb, (int(x + w / 2), int(y + h / 2)), 5, (0, 0, 255))
     canvas = np.hstack((d4d, rgb, rgbd))
-    # ## Display the stream
-    # h_min = cv2.getTrackbarPos("HUE Min", "HSV")
-    # h_max = cv2.getTrackbarPos("HUE Max", "HSV")
-    # s_min = cv2.getTrackbarPos("SAT Min", "HSV")
-    # s_max = cv2.getTrackbarPos("SAT Max", "HSV")
-    # v_min = cv2.getTrackbarPos("VALUE Min", "HSV")
-    # v_max = cv2.getTrackbarPos("VALUE Max", "HSV")
-    # R_min = cv2.getTrackbarPos("R Min", "HSV")
-    # R_max = cv2.getTrackbarPos("R Max", "HSV")
-    # G_min = cv2.getTrackbarPos("G Min", "HSV")
-    # G_max = cv2.getTrackbarPos("G Max", "HSV")
-    # B_min = cv2.getTrackbarPos("B Min", "HSV")
-    # B_max = cv2.getTrackbarPos("B Max", "HSV")
-    # print(h_min)
-    #
-    # lower = np.array([h_min, s_min, v_min])
-    # upper = np.array([h_max, s_max, v_max])
-    # lower2 = np.array([R_min, G_min, B_min])
-    # upper2 = np.array([R_max, G_max, B_max])
-    # mask = cv2.inRange(hsv, lower, upper)
-    # #mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    # result = cv2.bitwise_and(hsv, hsv, mask=mask)
-    # mask = cv2.inRange(result, lower2, upper2)
-    # # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    # result = cv2.bitwise_and(hsv, hsv, mask=mask)
-    # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    # hStack = np.hstack([hsv, mask, result])
-    # # cv2.imshow('Original', img)
-    # # cv2.imshow('HSV Color Space', imgHsv)
-    # # cv2.imshow('Mask', mask)
-    # # cv2.imshow('Result', result)
-    # cv2.imshow('Horizontal Stacking', hStack)
+
     cv2.imshow('depth || rgb || rgbd', canvas)
-    cv2.imshow('Bordes',Bordes)
-    cv2.imshow('ColorNegro', result)
+    #cv2.imshow('Bordes',Bordes)
+    #cv2.imshow('ColorNegro', result)
 # end while
 
 ## Release resources

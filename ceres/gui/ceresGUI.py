@@ -37,30 +37,30 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
   
-		self.ui.pushButton.clicked.connect(self.connectIMU)
-		self.ui.pushButton_3.clicked.connect(self.connectMainArduino)
-		self.ui.pushButton_2.clicked.connect(self.connectRCArduino)
-		self.ui.pushButton_18.clicked.connect(self.connectArduinoAct_X)
-		self.ui.pushButton_22.clicked.connect(self.connectArduinoAct_Y)
-		self.ui.pushButton_24.clicked.connect(self.connectArduinoAct_Z)
-		self.ui.pushButton_5.clicked.connect(self.startPathGenerator)
-		self.ui.pushButton_6.clicked.connect(self.stopPathGenerator)
-		self.ui.pushButton_12.clicked.connect(self.connectCameraPrime)
+		self.ui.IMU_connect.clicked.connect(self.connectIMU)
+		self.ui.MainArduino_connect.clicked.connect(self.connectMainArduino)
+		self.ui.RC_connect.clicked.connect(self.connectRCArduino)
+		self.ui.Act_X_connect.clicked.connect(self.connectArduinoAct_X)
+		self.ui.Act_Y_connect.clicked.connect(self.connectArduinoAct_Y)
+		self.ui.Act_Z_connect.clicked.connect(self.connectArduinoAct_Z)
+		self.ui.Start_Sequences_Button.clicked.connect(self.startPathGenerator)
+		self.ui.Stop_Sequences_Button.clicked.connect(self.stopPathGenerator)
+		self.ui.Run_Camera_Primesense_Button.clicked.connect(self.connectCameraPrime)
 
 
 
-		self.ui.pushButton_7.clicked.connect(self.detectIMU)
-		self.ui.pushButton_8.clicked.connect(self.detectArduinoRC)
-		self.ui.pushButton_9.clicked.connect(self.detectMainArduino)
-		self.ui.pushButton_19.clicked.connect(self.detectArduinoAct_X)
-		self.ui.pushButton_23.clicked.connect(self.detectArduinoAct_Y)
-		self.ui.pushButton_25.clicked.connect(self.detectArduinoAct_Z)
+		self.ui.IMU_autodetect.clicked.connect(self.detectIMU)
+		self.ui.RC_autodetect.clicked.connect(self.detectArduinoRC)
+		self.ui.MainArduino_autodetect.clicked.connect(self.detectMainArduino)
+		self.ui.Act_X_autodetect.clicked.connect(self.detectArduinoAct_X)
+		self.ui.Act_Y_autodetect.clicked.connect(self.detectArduinoAct_Y)
+		self.ui.Act_Z_autodetect.clicked.connect(self.detectArduinoAct_Z)
 
-		self.ui.pushButton_4.clicked.connect(self.loadPath)
+		self.ui.Open_Trajectory_File_Button.clicked.connect(self.loadPath)
 		
 		self.ui.verticalSlider.valueChanged.connect(refreshTrajectory)
-		self.ui.doubleSpinBox.valueChanged.connect(refreshTrajectory)
-		self.ui.doubleSpinBox_2.valueChanged.connect(refreshTrajectory)
+		self.ui.Distance_SpinBox.valueChanged.connect(refreshTrajectory)
+		self.ui.Diameter_SpinBox.valueChanged.connect(refreshTrajectory)
 
 		## Actuators
 		global X
@@ -70,16 +70,16 @@ class CeresApplication(QtWidgets.QMainWindow):
 		Y=0
 		Z=0
 
-		self.ui.Salir.clicked.connect(self.Salido)
-		self.ui.RETROCEDERX.clicked.connect(self.RETROCEDERXX)
-		self.ui.RETROCEDERY.clicked.connect(self.RETROCEDERYY)
-		self.ui.RETROCEDERZ.clicked.connect(self.RETROCEDERZZ)
-		self.ui.AVANZARX.clicked.connect(self.AVANZARXX)
-		self.ui.AVANZARY.clicked.connect(self.AVANZARYY)
-		self.ui.AVANZARZ.clicked.connect(self.AVANZARZZ)
-		self.ui.PARADAX.clicked.connect(self.STOPX)
-		self.ui.PARADAY.clicked.connect(self.STOPY)
-		self.ui.PARADAZ.clicked.connect(self.STOPZ)
+		self.ui.Leave.clicked.connect(self.Salido)
+		self.ui.Go_Back_X.clicked.connect(self.RETROCEDERXX)
+		self.ui.Go_Back_Y.clicked.connect(self.RETROCEDERYY)
+		self.ui.Go_Back_Z.clicked.connect(self.RETROCEDERZZ)
+		self.ui.Go_Forward_X.clicked.connect(self.AVANZARXX)
+		self.ui.Go_Forward_Y.clicked.connect(self.AVANZARYY)
+		self.ui.Go_Forward_Z.clicked.connect(self.AVANZARZZ)
+		self.ui.Stop_X.clicked.connect(self.STOPX)
+		self.ui.Stop_Y.clicked.connect(self.STOPY)
+		self.ui.Stop_Z.clicked.connect(self.STOPZ)
 
 
 	def loadPath(self):
@@ -95,23 +95,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 	
 	def connectIMU(self):
 		global procs
-		self.ui.pushButton.setText("Disconnect")
-		self.ui.pushButton.clicked.disconnect(self.connectIMU)
-		self.ui.pushButton_7.setEnabled(False)
-		self.ui.pushButton.clicked.connect(self.disconnectIMU)
-		imu = subprocess.Popen(['rosrun', 'advanced_navigation_driver', 'advanced_navigation_driver', '_baud:='+self.ui.comboBox.currentText(), '_port:='+self.ui.comboBox_2.currentText(), '__name:=ceres_IMU']) 
+		self.ui.IMU_connect.setText("Disconnect")
+		self.ui.IMU_connect.clicked.disconnect(self.connectIMU)
+		self.ui.IMU_autodetect.setEnabled(False)
+		self.ui.IMU_connect.clicked.connect(self.disconnectIMU)
+		imu = subprocess.Popen(['rosrun', 'advanced_navigation_driver', 'advanced_navigation_driver', '_baud:='+self.ui.IMU_vel_serial_list.currentText(), '_port:='+self.ui.IMU_port_list.currentText(), '__name:=ceres_IMU']) 
 		procs.append(["imu", imu])
-		self.ui.label_41.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_8.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.IMU_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.IMU_label_2.setText("<font color='#00AA00'>Connected</font>")
 
 	def disconnectIMU(self):
 		global procs
-		self.ui.label_41.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_8.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_7.setEnabled(True)
-		self.ui.pushButton.setText("Connect")
-		self.ui.pushButton.clicked.disconnect(self.disconnectIMU)
-		self.ui.pushButton.clicked.connect(self.connectIMU)
+		self.ui.IMU_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.IMU_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.IMU_autodetect.setEnabled(True)
+		self.ui.IMU_connect.setText("Connect")
+		self.ui.IMU_connect.clicked.disconnect(self.disconnectIMU)
+		self.ui.IMU_connect.clicked.connect(self.connectIMU)
 		for i in procs:
 			if i[0]=="imu":
 				i[1].kill()
@@ -120,23 +120,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 
 	def connectMainArduino(self):
 		global procs
-		self.ui.pushButton_3.setText("Disconnect")
-		self.ui.pushButton_3.clicked.disconnect(self.connectMainArduino)
-		self.ui.pushButton_3.clicked.connect(self.disconnectMainArduino)
-		self.ui.pushButton_9.setEnabled(False)
-		mainArduino = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_6.currentText(), '__name:=ceres_MainArduino']) 
+		self.ui.MainArduino_connect.setText("Disconnect")
+		self.ui.MainArduino_connect.clicked.disconnect(self.connectMainArduino)
+		self.ui.MainArduino_connect.clicked.connect(self.disconnectMainArduino)
+		self.ui.MainArduino_autodetect.setEnabled(False)
+		mainArduino = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.MainArduino_port_list.currentText(), '__name:=ceres_MainArduino']) 
 		procs.append(["mainArduino", mainArduino])
-		self.ui.label_49.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_10.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.MainArduino_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.MainArduino_label_2.setText("<font color='#00AA00'>Connected</font>")
 		
 	def disconnectMainArduino(self):
 		global procs
-		self.ui.label_49.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_10.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_9.setEnabled(True)
-		self.ui.pushButton_3.setText("Connect")
-		self.ui.pushButton_3.clicked.disconnect(self.disconnectMainArduino)
-		self.ui.pushButton_3.clicked.connect(self.connectMainArduino)
+		self.ui.MainArduino_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.MainArduino_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.MainArduino_autodetect.setEnabled(True)
+		self.ui.MainArduino_connect.setText("Connect")
+		self.ui.MainArduino_connect.clicked.disconnect(self.disconnectMainArduino)
+		self.ui.MainArduino_connect.clicked.connect(self.connectMainArduino)
 		for i in procs:
 			if i[0]=="mainArduino":
 				i[1].kill()
@@ -145,23 +145,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 				
 	def connectRCArduino(self):
 		global procs
-		self.ui.pushButton_2.setText("Disconnect")
-		self.ui.pushButton_2.clicked.disconnect(self.connectRCArduino)
-		self.ui.pushButton_2.clicked.connect(self.disconnectRCArduino)
-		self.ui.pushButton_8.setEnabled(False)
-		RCArduino = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_4.currentText(), '__name:=ceres_ArduinoRC']) 
+		self.ui.RC_connect.setText("Disconnect")
+		self.ui.RC_connect.clicked.disconnect(self.connectRCArduino)
+		self.ui.RC_connect.clicked.connect(self.disconnectRCArduino)
+		self.ui.RC_autodetect.setEnabled(False)
+		RCArduino = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.RC_port_list.currentText(), '__name:=ceres_ArduinoRC']) 
 		procs.append(["RCArduino", RCArduino])
-		self.ui.label_45.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_9.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.RC_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.RC_label_2.setText("<font color='#00AA00'>Connected</font>")
 		
 	def disconnectRCArduino(self):
 		global procs
-		self.ui.label_45.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_9.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_8.setEnabled(True)
-		self.ui.pushButton_2.setText("Connect")
-		self.ui.pushButton_2.clicked.disconnect(self.disconnectRCArduino)
-		self.ui.pushButton_2.clicked.connect(self.connectRCArduino)
+		self.ui.RC_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.RC_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.RC_autodetect.setEnabled(True)
+		self.ui.RC_connect.setText("Connect")
+		self.ui.RC_connect.clicked.disconnect(self.disconnectRCArduino)
+		self.ui.RC_connect.clicked.connect(self.connectRCArduino)
 		for i in procs:
 			if i[0]=="RCArduino":
 				i[1].kill()
@@ -171,19 +171,19 @@ class CeresApplication(QtWidgets.QMainWindow):
 
 	def connectCameraPrime(self):
 		global procs
-		self.ui.pushButton_12.setText("Stop Camera Primesense")
-		self.ui.pushButton_12.setStyleSheet('color: red;')
-		self.ui.pushButton_12.clicked.disconnect(self.connectCameraPrime)
-		self.ui.pushButton_12.clicked.connect(self.disconnectCameraPrime)
+		self.ui.Run_Camera_Primesense_Button.setText("Stop Camera Primesense")
+		self.ui.Run_Camera_Primesense_Button.setStyleSheet('color: red;')
+		self.ui.Run_Camera_Primesense_Button.clicked.disconnect(self.connectCameraPrime)
+		self.ui.Run_Camera_Primesense_Button.clicked.connect(self.disconnectCameraPrime)
 		PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense.py', '__name:=ceres_PrimeSense']) 
 		procs.append(["PrimeSense", PrimeSense])
 		
 	def disconnectCameraPrime(self):
 		global procs
-		self.ui.pushButton_12.setText("Run Camera Primesense")
-		self.ui.pushButton_12.setStyleSheet('color: green;')
-		self.ui.pushButton_12.clicked.disconnect(self.disconnectCameraPrime)
-		self.ui.pushButton_12.clicked.connect(self.connectCameraPrime)
+		self.ui.Run_Camera_Primesense_Button.setText("Run Camera Primesense")
+		self.ui.Run_Camera_Primesense_Button.setStyleSheet('color: green;')
+		self.ui.Run_Camera_Primesense_Button.clicked.disconnect(self.disconnectCameraPrime)
+		self.ui.Run_Camera_Primesense_Button.clicked.connect(self.connectCameraPrime)
 		for i in procs:
 			if i[0]=="PrimeSense":
 				i[1].kill()
@@ -193,23 +193,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 
 	def connectArduinoAct_X(self):
 		global procs
-		self.ui.pushButton_18.setText("Disconnect")
-		self.ui.pushButton_18.clicked.disconnect(self.connectArduinoAct_X)
-		self.ui.pushButton_18.clicked.connect(self.disconnectArduinoAct_X)
-		self.ui.pushButton_19.setEnabled(False)
-		ArduinoAct_X = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_11.currentText(), '__name:=ceres_ArduinoAct_X']) 
+		self.ui.Act_X_connect.setText("Disconnect")
+		self.ui.Act_X_connect.clicked.disconnect(self.connectArduinoAct_X)
+		self.ui.Act_X_connect.clicked.connect(self.disconnectArduinoAct_X)
+		self.ui.Act_X_autodetect.setEnabled(False)
+		ArduinoAct_X = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.Act_X_port_list.currentText(), '__name:=ceres_ArduinoAct_X']) 
 		procs.append(["ArduinoAct_X", ArduinoAct_X])
-		self.ui.label_116.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_117.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_X_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_X_label_2.setText("<font color='#00AA00'>Connected</font>")
 		
 	def disconnectArduinoAct_X(self):
 		global procs
-		self.ui.label_116.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_117.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_19.setEnabled(True)
-		self.ui.pushButton_18.setText("Connect")
-		self.ui.pushButton_18.clicked.disconnect(self.disconnectArduinoAct_X)
-		self.ui.pushButton_18.clicked.connect(self.connectArduinoAct_X)
+		self.ui.Act_X_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_X_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_X_autodetect.setEnabled(True)
+		self.ui.Act_X_connect.setText("Connect")
+		self.ui.Act_X_connect.clicked.disconnect(self.disconnectArduinoAct_X)
+		self.ui.Act_X_connect.clicked.connect(self.connectArduinoAct_X)
 		for i in procs:
 			if i[0]=="ArduinoAct_X":
 				i[1].kill()
@@ -218,23 +218,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 	
 	def connectArduinoAct_Y(self):
 		global procs
-		self.ui.pushButton_22.setText("Disconnect")
-		self.ui.pushButton_22.clicked.disconnect(self.connectArduinoAct_Y)
-		self.ui.pushButton_22.clicked.connect(self.disconnectArduinoAct_Y)
-		self.ui.pushButton_23.setEnabled(False)
-		ArduinoAct_Y = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_13.currentText(), '__name:=ceres_ArduinoAct_Y']) 
+		self.ui.Act_Y_connect.setText("Disconnect")
+		self.ui.Act_Y_connect.clicked.disconnect(self.connectArduinoAct_Y)
+		self.ui.Act_Y_connect.clicked.connect(self.disconnectArduinoAct_Y)
+		self.ui.Act_Y_autodetect.setEnabled(False)
+		ArduinoAct_Y = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.Act_Y_port_list.currentText(), '__name:=ceres_ArduinoAct_Y']) 
 		procs.append(["ArduinoAct_Y", ArduinoAct_Y])
-		self.ui.label_124.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_130.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_Y_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_Y_label_2.setText("<font color='#00AA00'>Connected</font>")
 		
 	def disconnectArduinoAct_Y(self):
 		global procs
-		self.ui.label_124.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_130.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_23.setEnabled(True)
-		self.ui.pushButton_22.setText("Connect")
-		self.ui.pushButton_22.clicked.disconnect(self.disconnectArduinoAct_Y)
-		self.ui.pushButton_22.clicked.connect(self.connectArduinoAct_Y)
+		self.ui.Act_Y_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_Y_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_Y_autodetect.setEnabled(True)
+		self.ui.Act_Y_connect.setText("Connect")
+		self.ui.Act_Y_connect.clicked.disconnect(self.disconnectArduinoAct_Y)
+		self.ui.Act_Y_connect.clicked.connect(self.connectArduinoAct_Y)
 		for i in procs:
 			if i[0]=="ArduinoAct_Y":
 				i[1].kill()
@@ -243,23 +243,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 	
 	def connectArduinoAct_Z(self):
 		global procs
-		self.ui.pushButton_24.setText("Disconnect")
-		self.ui.pushButton_24.clicked.disconnect(self.connectArduinoAct_Z)
-		self.ui.pushButton_24.clicked.connect(self.disconnectArduinoAct_Z)
-		self.ui.pushButton_25.setEnabled(False)
-		ArduinoAct_Z = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.comboBox_14.currentText(), '__name:=ceres_ArduinoAct_Z']) 
+		self.ui.Act_Z_connect.setText("Disconnect")
+		self.ui.Act_Z_connect.clicked.disconnect(self.connectArduinoAct_Z)
+		self.ui.Act_Z_connect.clicked.connect(self.disconnectArduinoAct_Z)
+		self.ui.Act_Z_autodetect.setEnabled(False)
+		ArduinoAct_Z = subprocess.Popen(['rosrun', 'rosserial_python', 'serial_node.py', '_port:='+self.ui.Act_Z_port_list.currentText(), '__name:=ceres_ArduinoAct_Z']) 
 		procs.append(["ArduinoAct_Z", ArduinoAct_Z])
-		self.ui.label_127.setText("<font color='#00AA00'>Connected</font>")
-		self.ui.label_131.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_Z_label_4.setText("<font color='#00AA00'>Connected</font>")
+		self.ui.Act_Z_label_2.setText("<font color='#00AA00'>Connected</font>")
 		
 	def disconnectArduinoAct_Z(self):
 		global procs
-		self.ui.label_127.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.label_131.setText("<font color=''#FF0000'>Not Connected</font>")
-		self.ui.pushButton_25.setEnabled(True)
-		self.ui.pushButton_24.setText("Connect")
-		self.ui.pushButton_24.clicked.disconnect(self.disconnectArduinoAct_Z)
-		self.ui.pushButton_24.clicked.connect(self.connectArduinoAct_Z)
+		self.ui.Act_Z_label_4.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_Z_label_2.setText("<font color=''#FF0000'>Not Connected</font>")
+		self.ui.Act_Z_autodetect.setEnabled(True)
+		self.ui.Act_Z_connect.setText("Connect")
+		self.ui.Act_Z_connect.clicked.disconnect(self.disconnectArduinoAct_Z)
+		self.ui.Act_Z_connect.clicked.connect(self.connectArduinoAct_Z)
 		for i in procs:
 			if i[0]=="ArduinoAct_Z":
 				i[1].kill()
@@ -317,19 +317,19 @@ class CeresApplication(QtWidgets.QMainWindow):
 				flag=False
 				break
 		if flag:
-			if myapp.ui.horizontalSlider.value()==1:
+			if myapp.ui.CSV_Slider.value()==1:
 				csvLogger= subprocess.Popen(['rosrun', 'ceres', 'ceresLog.py', '__name:=ceres_Logger']) 
 				procs.append(["csvLogger", csvLogger])
 			
-			if myapp.ui.horizontalSlider_2.value()==1:
+			if myapp.ui.BAG_Slider.value()==1:
 				bagLogger= subprocess.Popen(['rosbag', 'record', '-a', '__name:=ceres_bag']) 
 				procs.append(["bagLogger", bagLogger])
 		
 			if myapp.ui.verticalSlider.value()==1:				
-				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresPathGenerator.py', '1', str(myapp.ui.doubleSpinBox_2.value())]) 
+				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresPathGenerator.py', '1', str(myapp.ui.Diameter_SpinBox.value())]) 
 				procs.append(["PathGenerator", pathGenerator])
 			elif myapp.ui.verticalSlider.value()==2:
-				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresPathGenerator.py', '0', str(myapp.ui.doubleSpinBox.value())]) 
+				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresPathGenerator.py', '0', str(myapp.ui.Distance_SpinBox.value())]) 
 				procs.append(["PathGenerator", pathGenerator])
 			elif myapp.ui.verticalSlider.value()==3:
 				poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
@@ -385,7 +385,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 	def detectIMU(self):
 		global myapp
 		
-		myapp.ui.comboBox_2.clear()
+		myapp.ui.IMU_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -398,12 +398,12 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_2.addItems(L)
+		myapp.ui.IMU_port_list.addItems(L)
 
 	def detectArduinoRC(self):
 		global myapp
 		
-		myapp.ui.comboBox_4.clear()
+		myapp.ui.RC_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -417,12 +417,12 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_4.addItems(L)
+		myapp.ui.RC_port_list.addItems(L)
 		
 	def detectMainArduino(self):
 		global myapp
 		
-		myapp.ui.comboBox_6.clear()
+		myapp.ui.MainArduino_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -436,13 +436,13 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_6.addItems(L)
+		myapp.ui.MainArduino_port_list.addItems(L)
 
 
 	def detectArduinoAct_X(self):
 		global myapp
 		
-		myapp.ui.comboBox_11.clear()
+		myapp.ui.Act_X_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -456,13 +456,13 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_11.addItems(L)
+		myapp.ui.Act_X_port_list.addItems(L)
 
 
 	def detectArduinoAct_Y(self):
 		global myapp
 		
-		myapp.ui.comboBox_13.clear()
+		myapp.ui.Act_Y_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -476,12 +476,12 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_13.addItems(L)
+		myapp.ui.Act_Y_port_list.addItems(L)
 
 	def detectArduinoAct_Z(self):
 		global myapp
 		
-		myapp.ui.comboBox_14.clear()
+		myapp.ui.Act_Z_port_list.clear()
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
@@ -495,7 +495,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		for i in range(len(ports)):
 			if i!=n:
 				L.append(ports[i].device)
-		myapp.ui.comboBox_14.addItems(L)
+		myapp.ui.Act_Z_port_list.addItems(L)
 
 def refreshProcs():
 	global procs, myapp
@@ -504,70 +504,70 @@ def refreshProcs():
 		if i[1].poll() is not None:
 			if  i[0] == "imu":
 				procs.pop(procs.index(i))
-				myapp.ui.label_41.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_8.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton.setText("Connect")
-				myapp.ui.pushButton.clicked.disconnect(myapp.disconnectIMU)
-				myapp.ui.pushButton.clicked.connect(myapp.connectIMU)
-				myapp.ui.pushButton_7.setEnabled(True)
+				myapp.ui.IMU_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.IMU_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.IMU_connect.setText("Connect")
+				myapp.ui.IMU_connect.clicked.disconnect(myapp.disconnectIMU)
+				myapp.ui.IMU_connect.clicked.connect(myapp.connectIMU)
+				myapp.ui.IMU_autodetect.setEnabled(True)
 				break
 				
 			elif  i[0] == "mainArduino":
 				procs.pop(procs.index(i))
-				myapp.ui.label_49.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_10.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton_3.setText("Connect")
-				myapp.ui.pushButton_3.clicked.disconnect(myapp.disconnectMainArduino)
-				myapp.ui.pushButton_3.clicked.connect(myapp.connectMainArduino)
-				myapp.ui.pushButton_9.setEnabled(True)
+				myapp.ui.MainArduino_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.MainArduino_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.MainArduino_connect.setText("Connect")
+				myapp.ui.MainArduino_connect.clicked.disconnect(myapp.disconnectMainArduino)
+				myapp.ui.MainArduino_connect.clicked.connect(myapp.connectMainArduino)
+				myapp.ui.MainArduino_autodetect.setEnabled(True)
 				break
 				
 			elif  i[0] == "RCArduino":
 				procs.pop(procs.index(i))
-				myapp.ui.label_45.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_9.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton_2.setText("Connect")
-				myapp.ui.pushButton_2.clicked.disconnect(myapp.disconnectRCArduino)
-				myapp.ui.pushButton_2.clicked.connect(myapp.connectRCArduino)
-				myapp.ui.pushButton_8.setEnabled(True)
+				myapp.ui.RC_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.RC_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.RC_connect.setText("Connect")
+				myapp.ui.RC_connect.clicked.disconnect(myapp.disconnectRCArduino)
+				myapp.ui.RC_connect.clicked.connect(myapp.connectRCArduino)
+				myapp.ui.RC_autodetect.setEnabled(True)
 				break
 
 			elif  i[0] == "PrimeSense":
 				procs.pop(procs.index(i))
-				myapp.ui.pushButton_12.setText("Run Camera Primesense")
-				myapp.ui.pushButton_12.setStyleSheet('color: green;')
-				myapp.ui.pushButton_12.clicked.disconnect(myapp.disconnectCameraPrime)
-				myapp.ui.pushButton_12.clicked.connect(myapp.connectCameraPrime)
+				myapp.ui.Run_Camera_Primesense_Button.setText("Run Camera Primesense")
+				myapp.ui.Run_Camera_Primesense_Button.setStyleSheet('color: green;')
+				myapp.ui.Run_Camera_Primesense_Button.clicked.disconnect(myapp.disconnectCameraPrime)
+				myapp.ui.Run_Camera_Primesense_Button.clicked.connect(myapp.connectCameraPrime)
 				break
 
 			elif  i[0] == "ArduinoAct_X":
 				procs.pop(procs.index(i))
-				myapp.ui.label_116.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_117.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton_18.setText("Connect")
-				myapp.ui.pushButton_18.clicked.disconnect(myapp.disconnectArduinoAct_X)
-				myapp.ui.pushButton_18.clicked.connect(myapp.connectArduinoAct_X)
-				myapp.ui.pushButton_19.setEnabled(True)
+				myapp.ui.Act_X_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_X_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_X_connect.setText("Connect")
+				myapp.ui.Act_X_connect.clicked.disconnect(myapp.disconnectArduinoAct_X)
+				myapp.ui.Act_X_connect.clicked.connect(myapp.connectArduinoAct_X)
+				myapp.ui.Act_X_autodetect.setEnabled(True)
 				break
 
 			elif  i[0] == "ArduinoAct_Y":
 				procs.pop(procs.index(i))
-				myapp.ui.label_124.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_130.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton_22.setText("Connect")
-				myapp.ui.pushButton_22.clicked.disconnect(myapp.disconnectArduinoAct_Y)
-				myapp.ui.pushButton_22.clicked.connect(myapp.connectArduinoAct_Y)
-				myapp.ui.pushButton_23.setEnabled(True)
+				myapp.ui.Act_Y_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_Y_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_Y_connect.setText("Connect")
+				myapp.ui.Act_Y_connect.clicked.disconnect(myapp.disconnectArduinoAct_Y)
+				myapp.ui.Act_Y_connect.clicked.connect(myapp.connectArduinoAct_Y)
+				myapp.ui.Act_Y_autodetect.setEnabled(True)
 				break
 
 			elif  i[0] == "ArduinoAct_Z":
 				procs.pop(procs.index(i))
-				myapp.ui.label_127.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.label_131.setText("<font color='#FF0000'>Not Connected</font>")
-				myapp.ui.pushButton_24.setText("Connect")
-				myapp.ui.pushButton_24.clicked.disconnect(myapp.disconnectArduinoAct_Z)
-				myapp.ui.pushButton_24.clicked.connect(myapp.connectArduinoAct_Z)
-				myapp.ui.pushButton_25.setEnabled(True)
+				myapp.ui.Act_Z_label_4.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_Z_label_2.setText("<font color='#FF0000'>Not Connected</font>")
+				myapp.ui.Act_Z_connect.setText("Connect")
+				myapp.ui.Act_Z_connect.clicked.disconnect(myapp.disconnectArduinoAct_Z)
+				myapp.ui.Act_Z_connect.clicked.connect(myapp.connectArduinoAct_Z)
+				myapp.ui.Act_Z_autodetect.setEnabled(True)
 				break
 				
 			elif  i[0] == "PathGenerator" or i[0]=="PathReader":
@@ -653,32 +653,32 @@ def updateLog():
 	global myapp, logs
 	while(len(logs)>0):
 		if logs[0][1] == 1:
-			myapp.ui.textEdit.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#55aa00;\" >"+logs[0][0] +"</span><br/><br/>")
-			myapp.ui.textEdit_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#55aa00;\" >"+logs[0][0] +"</span><br/><br/>")
+			myapp.ui.Terminal_1.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#55aa00;\" >"+logs[0][0] +"</span><br/><br/>")
+			myapp.ui.Terminal_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#55aa00;\" >"+logs[0][0] +"</span><br/><br/>")
 			myapp.ui.statusBar.showMessage("MainArduino:  "+logs[0][0], 5000)
 
 		elif logs[0][1]  == 2:
-			myapp.ui.textEdit.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#0000FF;\" >"+logs[0][0]+"</span><br/><br/>")
-			myapp.ui.textEdit_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#0000FF;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_1.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#0000FF;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#0000FF;\" >"+logs[0][0]+"</span><br/><br/>")
 			myapp.ui.statusBar.showMessage("MainArduino:  "+logs[0][0], 5000)
 		
 		elif logs[0][1]  == 4:
-			myapp.ui.textEdit.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#ffaa00;\" >"+logs[0][0]+"</span><br/><br/>")
-			myapp.ui.textEdit_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#ffaa00;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_1.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#ffaa00;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#ffaa00;\" >"+logs[0][0]+"</span><br/><br/>")
 			myapp.ui.statusBar.showMessage("MainArduino:  "+logs[0][0], 5000)
 
 		elif logs[0][1]  == 8:
-			myapp.ui.textEdit.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#FF0000;\" >"+logs[0][0]+"</span><br/><br/>")
-			myapp.ui.textEdit_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#FF0000;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_1.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#FF0000;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#FF0000;\" >"+logs[0][0]+"</span><br/><br/>")
 			myapp.ui.statusBar.showMessage("MainArduino:  "+logs[0][0], 5000)
 			
 		elif logs[0][1]  == 16:
-			myapp.ui.textEdit.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#aa0000;\" >"+logs[0][0]+"</span><br/><br/>")
-			myapp.ui.textEdit_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#aa0000;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_1.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#aa0000;\" >"+logs[0][0]+"</span><br/><br/>")
+			myapp.ui.Terminal_2.insertHtml("<span style=\" font-size:8pt; font-weight:600; color:#aa0000;\" >"+logs[0][0]+"</span><br/><br/>")
 			myapp.ui.statusBar.showMessage("MainArduino:  "+logs[0][0], 5000)
 		logs=logs[1:]
-		myapp.ui.textEdit.moveCursor(QTextCursor.End)
-		myapp.ui.textEdit_2.moveCursor(QTextCursor.End)
+		myapp.ui.Terminal_1.moveCursor(QTextCursor.End)
+		myapp.ui.Terminal_2.moveCursor(QTextCursor.End)
 		
 # adquire: Initialize all the subscribers/publishers.
 def adquire():
@@ -697,78 +697,78 @@ def refreshGraph():
 	timeList.append(timeList[-1]+1.0/graphRate)
 	eastingList.pop(0)
 	eastingList.append(var[1][3])
-	myapp.ui.graphicsView_8.clear()
-	myapp.ui.graphicsView_8.plot(timeList,eastingList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_8.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_8.showGrid(x=True, y=True)
+	myapp.ui.Easting_Position_view.clear()
+	myapp.ui.Easting_Position_view.plot(timeList,eastingList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Easting_Position_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Easting_Position_view.showGrid(x=True, y=True)
 
 	northingList.pop(0)
 	northingList.append(var[2][3])
-	myapp.ui.graphicsView_7.clear()
-	myapp.ui.graphicsView_7.plot(timeList,northingList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_7.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_7.showGrid(x=True, y=True)
+	myapp.ui.Northing_Position_view.clear()
+	myapp.ui.Northing_Position_view.plot(timeList,northingList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Northing_Position_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Northing_Position_view.showGrid(x=True, y=True)
 
 	headingList.pop(0)
 	headingList.append(360*var[3][3]/(2*3.14))
-	myapp.ui.graphicsView_6.clear()
-	myapp.ui.graphicsView_6.plot(timeList,headingList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_6.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_6.showGrid(x=True, y=True)
+	myapp.ui.Heading_Orientation_view.clear()
+	myapp.ui.Heading_Orientation_view.plot(timeList,headingList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Heading_Orientation_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Heading_Orientation_view.showGrid(x=True, y=True)
 
 	velocityXList.pop(0)
 	velocityXList.append(var[4][3])
-	myapp.ui.graphicsView_9.clear()
-	myapp.ui.graphicsView_9.plot(timeList,velocityXList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_9.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_9.showGrid(x=True, y=True)
+	myapp.ui.Robot_X_Velocity_view.clear()
+	myapp.ui.Robot_X_Velocity_view.plot(timeList,velocityXList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Robot_X_Velocity_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Robot_X_Velocity_view.showGrid(x=True, y=True)
 
 	velocityYList.pop(0)
 	velocityYList.append(var[17][3])
-	myapp.ui.graphicsView_10.clear()
-	myapp.ui.graphicsView_10.plot(timeList,velocityYList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_10.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_10.showGrid(x=True, y=True)
+	myapp.ui.Robot_Y_Velocity_view.clear()
+	myapp.ui.Robot_Y_Velocity_view.plot(timeList,velocityYList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Robot_Y_Velocity_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Robot_Y_Velocity_view.showGrid(x=True, y=True)
 
 	angularVelocityList.pop(0)
 	angularVelocityList.append(var[5][3])
-	myapp.ui.graphicsView_11.clear()
-	myapp.ui.graphicsView_11.plot(timeList,angularVelocityList, pen=pyqtgraph.mkPen('k', width=3))
-	myapp.ui.graphicsView_11.setXRange(timeList[0], timeList[-1], padding=0)
-	myapp.ui.graphicsView_11.showGrid(x=True, y=True)
+	myapp.ui.Robot_Ang_Velocity_view.clear()
+	myapp.ui.Robot_Ang_Velocity_view.plot(timeList,angularVelocityList, pen=pyqtgraph.mkPen('k', width=3))
+	myapp.ui.Robot_Ang_Velocity_view.setXRange(timeList[0], timeList[-1], padding=0)
+	myapp.ui.Robot_Ang_Velocity_view.showGrid(x=True, y=True)
 	
 
 def refreshData():
 	global myapp, var, i
-	myapp.ui.label_27.setText(str(round(var[14][3], 8))) #Refresh Latitude
-	myapp.ui.label_28.setText(str(round(var[15][3], 8))) #Refresh Longitude
-	myapp.ui.label_31.setText(str(round(var[16][3], 0))) #Refresh Altitude
-	myapp.ui.label_29.setText(str(round(var[1][3], 2))) #Refresh Easting
-	myapp.ui.label_30.setText(str(round(var[2][3], 2))) #Refresh Northing
+	myapp.ui.Latitude_label_.setText(str(round(var[14][3], 8))) #Refresh Latitude
+	myapp.ui.Longitude_label_.setText(str(round(var[15][3], 8))) #Refresh Longitude
+	myapp.ui.Altitude_label_.setText(str(round(var[16][3], 0))) #Refresh Altitude
+	myapp.ui.Easting_label_.setText(str(round(var[1][3], 2))) #Refresh Easting
+	myapp.ui.Northing_label_.setText(str(round(var[2][3], 2))) #Refresh Northing
 
 	myapp.ui.progressBarThrottle.setValue(var[10][3]) #Refresh CH1
 	myapp.ui.progressBarYaw.setValue(var[11][3]) #Refresh CH2
 	myapp.ui.progressBarAUX.setValue(var[13][3]) #Refresh AUX
 	myapp.ui.progressBarAU.setValue(var[12][3]) #Refresh AU
 	
-	myapp.ui.progressBar.setValue(int(1000*var[6][3])) #Refresh Voltage
-	myapp.ui.progressBar_2.setValue(int(1000*var[7][3])) #Refresh Voltage
+	myapp.ui.left_driver_vol_indicator.setValue(int(1000*var[6][3])) #Refresh Voltage
+	myapp.ui.right_driver_vol_indicator.setValue(int(1000*var[7][3])) #Refresh Voltage
 	
 	if var[12][3] > 50:
-		myapp.ui.label_12.setText("<font color='#FF0000'>Emergency Stop</font>")
+		myapp.ui.status_mode_2.setText("<font color='#FF0000'>Emergency Stop</font>")
 	elif var[13][3] > 50:
-		myapp.ui.label_12.setText("<font color='#00AA00'>Automatic Mode</font>")
+		myapp.ui.status_mode_2.setText("<font color='#00AA00'>Automatic Mode</font>")
 	else:
-		myapp.ui.label_12.setText("<font color='#ffaa00'>Manual Mode</font>")
+		myapp.ui.status_mode_2.setText("<font color='#ffaa00'>Manual Mode</font>")
 	
 	if(var[14][3]!=0.0 or var[15][3] != 0.0):
 		coords = var[14][3], var[15][3]
-		myapp.ui.graphicsView_3.addMarker("Position Time: "+str(var[0][3]), *coords, **dict(
+		myapp.ui.Map_Position_fullview.addMarker("Position Time: "+str(var[0][3]), *coords, **dict(
 			icon="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png",
 			draggable=False,
 			title="Position Time: "+str(var[0][3])
 		))
-		myapp.ui.graphicsView_3.centerAt(var[14][3], var[15][3])
+		myapp.ui.Map_Position_fullview.centerAt(var[14][3], var[15][3])
 
 		coords = var[14][3], var[15][3]
 		myapp.ui.graphicsView.addMarker("Position Time: "+str(var[0][3]), *coords, **dict(
@@ -776,7 +776,7 @@ def refreshData():
 			draggable=False,
 			title="Position Time: "+str(var[0][3])
 		))
-		myapp.ui.graphicsView.centerAt(var[14][3], var[15][3])
+		myapp.ui.Map_Position_view.centerAt(var[14][3], var[15][3])
 
 	img = QImage()
 	path = os.path.dirname(os.path.abspath(__file__))
@@ -805,54 +805,54 @@ def refreshData():
 	pixmap = QPixmap(img)
 	transform = QTransform().rotate((var[19][3]*180.0/3.14))
 	pixmap = pixmap.transformed(transform, Qt.SmoothTransformation)
-	myapp.ui.label_103.setPixmap(pixmap)
+	myapp.ui.XYZ_img_label.setPixmap(pixmap)
 
-	myapp.ui.label_75.setText(str(round(var[3][3]*180.0/3.14,1))+" deg")
-	myapp.ui.label_76.setText(str((round(var[18][3]*180.0/3.14,1)+180.0)%360)+" deg")
-	myapp.ui.label_77.setText(str(round(-var[19][3]*180.0/3.14,1))+" deg")
+	myapp.ui.Heading_label_.setText(str(round(var[3][3]*180.0/3.14,1))+" deg")
+	myapp.ui.Roll_label_.setText(str((round(var[18][3]*180.0/3.14,1)+180.0)%360)+" deg")
+	myapp.ui.Pitch_label_.setText(str(round(-var[19][3]*180.0/3.14,1))+" deg")
 
 		
 		
 def refreshTrajectory():
 	global myapp
 	if  myapp.ui.verticalSlider.value()==1:
-		myapp.ui.pushButton_5.setEnabled(True)
-		points = calculateCirclePoints(myapp.ui.doubleSpinBox_2.value())
+		myapp.ui.Start_Sequences_Button.setEnabled(True)
+		points = calculateCirclePoints(myapp.ui.Diameter_SpinBox.value())
 	elif myapp.ui.verticalSlider.value()==2:
-		myapp.ui.pushButton_5.setEnabled(True)
-		points=calculateLinePoints(myapp.ui.doubleSpinBox.value())
+		myapp.ui.Start_Sequences_Button.setEnabled(True)
+		points=calculateLinePoints(myapp.ui.Distance_SpinBox.value())
 	elif myapp.ui.verticalSlider.value()==3:
 		if(myapp.path ==""):
-			myapp.ui.pushButton_5.setEnabled(False)
+			myapp.ui.Start_Sequences_Button.setEnabled(False)
 			rospy.logwarn("[GUI]  Please load a Path File.")
 			points=[[0],[0]]
 		else:
-			myapp.ui.pushButton_5.setEnabled(True)
+			myapp.ui.Start_Sequences_Button.setEnabled(True)
 			points=readPath()
 	elif myapp.ui.verticalSlider.value()==4:
-		myapp.ui.pushButton_5.setEnabled(True)
-		points=calculateLinePoints(myapp.ui.doubleSpinBox.value())
+		myapp.ui.Start_Sequences_Button.setEnabled(True)
+		points=calculateLinePoints(myapp.ui.Distance_SpinBox.value())
 	else:
 		points=[[0.0],[0.0]]
-	myapp.ui.graphicsView_13.clear()
+	myapp.ui.Movement_Previews_view.clear()
 	if myapp.ui.verticalSlider.value()==3:
-		myapp.ui.graphicsView_13.plot(points[0], points[1], pen=pyqtgraph.mkPen('r', width=3), symbol='d')
+		myapp.ui.Movement_Previews_view.plot(points[0], points[1], pen=pyqtgraph.mkPen('r', width=3), symbol='d')
 	else:
-		myapp.ui.graphicsView_13.plot(points[0], points[1], pen=pyqtgraph.mkPen('r', width=3))
+		myapp.ui.Movement_Previews_view.plot(points[0], points[1], pen=pyqtgraph.mkPen('r', width=3))
 
 	path = os.path.dirname(os.path.abspath(__file__))
 	img = QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(os.path.join(path, 'top.png')))
 	img.scale(0.04,-0.04)
 	img.translate(-2.02/0.04,-0.82/0.04)
-	myapp.ui.graphicsView_13.addItem(img)
-	lims = myapp.ui.graphicsView_13.getViewBox().childrenBounds()
+	myapp.ui.Movement_Previews_view.addItem(img)
+	lims = myapp.ui.Movement_Previews_view.getViewBox().childrenBounds()
 	mini = min(lims[0][0], lims[1][0])
 	maxi = max(lims[0][1], lims[1][1])
-	myapp.ui.graphicsView_13.setXRange(mini-0.5, maxi+0.5)
-	myapp.ui.graphicsView_13.setYRange(mini-0.5, maxi+0.5)
+	myapp.ui.Movement_Previews_view.setXRange(mini-0.5, maxi+0.5)
+	myapp.ui.Movement_Previews_view.setYRange(mini-0.5, maxi+0.5)
 
-	myapp.ui.graphicsView_13.setLabel('left', "Robot Front Axis")
-	myapp.ui.graphicsView_13.setLabel('bottom', "Robot Right Axis")
+	myapp.ui.Movement_Previews_view.setLabel('left', "Robot Front Axis")
+	myapp.ui.Movement_Previews_view.setLabel('bottom', "Robot Right Axis")
 
 def readPath():
 	global myapp, var
@@ -1021,17 +1021,17 @@ if __name__ == "__main__":
 	procsTimer.timeout.connect(refreshProcs)
 	procsTimer.start(int(1000/procsRate))
 	
-	myapp.ui.graphicsView.waitUntilReady()
-	myapp.ui.graphicsView.centerAt(4.638, -74.08523)
-	myapp.ui.graphicsView.setZoom(15)
+	myapp.ui.Map_Position_view.waitUntilReady()
+	myapp.ui.Map_Position_view.centerAt(4.638, -74.08523)
+	myapp.ui.Map_Position_view.setZoom(15)
 	
-	myapp.ui.graphicsView_3.waitUntilReady()
-	myapp.ui.graphicsView_3.centerAt(4.638, -74.08523)
-	myapp.ui.graphicsView_3.setZoom(16)
+	myapp.ui.Map_Position_fullview.waitUntilReady()
+	myapp.ui.Map_Position_fullview.centerAt(4.638, -74.08523)
+	myapp.ui.Map_Position_fullview.setZoom(16)
 
-	myapp.ui.graphicsView_13.setLabel('left', "Robot Front Axis")
-	myapp.ui.graphicsView_13.setLabel('bottom', "Robot Right Axis")
-	myapp.ui.graphicsView_13.showGrid(x=True, y=True)
+	myapp.ui.Movement_Previews_view.setLabel('left', "Robot Front Axis")
+	myapp.ui.Movement_Previews_view.setLabel('bottom', "Robot Right Axis")
+	myapp.ui.Movement_Previews_view.showGrid(x=True, y=True)
 	path = os.path.dirname(os.path.abspath(__file__))
 	img = QPixmap('top.png')
 	#img.scaled(Qt.IgnoreAspectRatio)
@@ -1039,7 +1039,7 @@ if __name__ == "__main__":
 	# img = pyqtgraph.QtWidgets.QGraphicsPixmapItem(pyqtgraph.QtWidgets.QPixmap(os.path.join(path, 'top.png')))
 	#img.scale(0.04,-0.04)
 	#img.translate(-2.02/0.04,-0.82/0.04)
-	myapp.ui.graphicsView_13.addItem(pixItem)
+	myapp.ui.Movement_Previews_view.addItem(pixItem)
 	
 	myapp.show()
 	sys.exit(app.exec_())

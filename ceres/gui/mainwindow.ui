@@ -1399,7 +1399,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>5</number>
     </property>
     <property name="iconSize">
      <size>
@@ -1419,7 +1419,7 @@
     <property name="tabsClosable">
      <bool>false</bool>
     </property>
-    <widget class="QWidget" name="tab">
+    <widget class="QWidget" name="Robot_overview">
      <property name="palette">
       <palette>
        <active>
@@ -1869,7 +1869,7 @@
      <attribute name="title">
       <string>Robot Overview</string>
      </attribute>
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QGroupBox" name="RC_Channels">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -1906,7 +1906,7 @@
         <number>76</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="Throttle_label">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -1954,7 +1954,7 @@
         <string>%v%</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="yaw_speed_label">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -1996,7 +1996,7 @@
         <number>0</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_3">
+      <widget class="QLabel" name="aux_label">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -2022,7 +2022,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="emergency_label">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -2065,7 +2065,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="Connexions_Overview">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -2086,7 +2086,7 @@
       <property name="title">
        <string>Connexions Overview</string>
       </property>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="IMU_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2111,7 +2111,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_6">
+      <widget class="QLabel" name="RC_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2136,7 +2136,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_7">
+      <widget class="QLabel" name="MainArduino_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2161,7 +2161,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_8">
+      <widget class="QLabel" name="IMU_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2189,7 +2189,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_9">
+      <widget class="QLabel" name="RC_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2217,7 +2217,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_10">
+      <widget class="QLabel" name="MainArduino_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2245,7 +2245,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_117">
+      <widget class="QLabel" name="Act_X_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2273,7 +2273,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_118">
+      <widget class="QLabel" name="Act_X_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2298,7 +2298,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_128">
+      <widget class="QLabel" name="Act_Y_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2323,7 +2323,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_130">
+      <widget class="QLabel" name="Act_Y_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2351,7 +2351,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_129">
+      <widget class="QLabel" name="Act_Z_label_1">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2376,7 +2376,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_131">
+      <widget class="QLabel" name="Act_Z_label_2">
        <property name="geometry">
         <rect>
          <x>220</x>
@@ -2405,7 +2405,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_3">
+     <widget class="QGroupBox" name="Robot_Status">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -2417,7 +2417,7 @@
       <property name="title">
        <string>Robot Status</string>
       </property>
-      <widget class="QLabel" name="label_11">
+      <widget class="QLabel" name="status_mode_1">
        <property name="geometry">
         <rect>
          <x>50</x>
@@ -2443,10 +2443,10 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_12">
+      <widget class="QLabel" name="status_mode_2">
        <property name="geometry">
         <rect>
-         <x>220</x>
+         <x>215</x>
          <y>40</y>
          <width>141</width>
          <height>20</height>
@@ -2471,7 +2471,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_13">
+      <widget class="QLabel" name="status_Drivers_Brakes_1">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -2497,7 +2497,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_14">
+      <widget class="QLabel" name="status_EM_Brakes_1">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -2523,7 +2523,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_23">
+      <widget class="QLabel" name="status_Cooling_Pumps_1">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -2634,7 +2634,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_4">
+     <widget class="QGroupBox" name="Robot_Position">
       <property name="geometry">
        <rect>
         <x>780</x>
@@ -2655,7 +2655,7 @@
       <property name="title">
        <string>Robot Position</string>
       </property>
-      <widget class="QLabel" name="label_15">
+      <widget class="QLabel" name="Heading_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2681,17 +2681,17 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QOSM" name="graphicsView">
+      <widget class="QOSM" name="Map_Position_view">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>200</y>
+         <x>5</x>
+         <y>205</y>
          <width>471</width>
          <height>261</height>
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="label_16">
+      <widget class="QLabel" name="Map_Position_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -2717,7 +2717,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_17">
+      <widget class="QLabel" name="Latitude_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -2743,7 +2743,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_18">
+      <widget class="QLabel" name="Longitude_label">
        <property name="geometry">
         <rect>
          <x>260</x>
@@ -2763,7 +2763,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Longitude: </string>
+        <string>Longitude:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -2795,7 +2795,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_20">
+      <widget class="QLabel" name="Northing_label">
        <property name="geometry">
         <rect>
          <x>240</x>
@@ -2821,7 +2821,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_21">
+      <widget class="QLabel" name="Easting_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -2847,7 +2847,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_22">
+      <widget class="QLabel" name="Altitude_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -2873,7 +2873,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_27">
+      <widget class="QLabel" name="Latitude_label_">
        <property name="geometry">
         <rect>
          <x>130</x>
@@ -2899,7 +2899,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_28">
+      <widget class="QLabel" name="Longitude_label_">
        <property name="geometry">
         <rect>
          <x>360</x>
@@ -2925,7 +2925,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_29">
+      <widget class="QLabel" name="Easting_label_">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -2951,7 +2951,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_30">
+      <widget class="QLabel" name="Northing_label_">
        <property name="geometry">
         <rect>
          <x>340</x>
@@ -2977,7 +2977,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_31">
+      <widget class="QLabel" name="Altitude_label_">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -3003,7 +3003,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_70">
+      <widget class="QLabel" name="Roll_label">
        <property name="geometry">
         <rect>
          <x>170</x>
@@ -3029,7 +3029,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_71">
+      <widget class="QLabel" name="Pitch_label">
        <property name="geometry">
         <rect>
          <x>350</x>
@@ -3142,7 +3142,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_75">
+      <widget class="QLabel" name="Heading_label_">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -3168,7 +3168,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_76">
+      <widget class="QLabel" name="Roll_label_">
        <property name="geometry">
         <rect>
          <x>200</x>
@@ -3194,7 +3194,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_77">
+      <widget class="QLabel" name="Pitch_label_">
        <property name="geometry">
         <rect>
          <x>370</x>
@@ -3221,13 +3221,13 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_5">
+     <widget class="QGroupBox" name="Terminal_Messages_1">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>390</y>
-        <width>741</width>
-        <height>241</height>
+        <y>385</y>
+        <width>756</width>
+        <height>236</height>
        </rect>
       </property>
       <property name="font">
@@ -3242,7 +3242,7 @@
       <property name="title">
        <string>Terminal Messages</string>
       </property>
-      <widget class="QTextEdit" name="textEdit">
+      <widget class="QTextEdit" name="Terminal_1">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -3264,84 +3264,103 @@
         <bool>true</bool>
        </property>
       </widget>
+      <widget class="QLabel" name="Debug_Messages">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>215</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(85, 170, 0)</string>
+       </property>
+       <property name="text">
+        <string>Debug Messages</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Info_Messages">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>215</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(0, 0, 255)</string>
+       </property>
+       <property name="text">
+        <string>Info Messages</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Warning_Messages">
+       <property name="geometry">
+        <rect>
+         <x>290</x>
+         <y>215</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 170, 0)</string>
+       </property>
+       <property name="text">
+        <string>Warning Messages</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Error_Messages">
+       <property name="geometry">
+        <rect>
+         <x>435</x>
+         <y>215</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 0, 0)</string>
+       </property>
+       <property name="text">
+        <string>Error Messages</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Fatal_Messages">
+       <property name="geometry">
+        <rect>
+         <x>570</x>
+         <y>215</y>
+         <width>181</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(170, 0, 0)</string>
+       </property>
+       <property name="text">
+        <string>Fatal Messages</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </widget>
-     <widget class="QLabel" name="label_50">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>600</y>
-        <width>181</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color:rgb(0, 0, 255)</string>
-      </property>
-      <property name="text">
-       <string>Info Messages</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_51">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>600</y>
-        <width>181</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color:rgb(255, 170, 0)</string>
-      </property>
-      <property name="text">
-       <string>Warning Messages</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_52">
-      <property name="geometry">
-       <rect>
-        <x>450</x>
-        <y>600</y>
-        <width>181</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color:rgb(255, 0, 0)</string>
-      </property>
-      <property name="text">
-       <string>Error Messages</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_53">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>600</y>
-        <width>181</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color:rgb(85, 170, 0)</string>
-      </property>
-      <property name="text">
-       <string>Debug Messages</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QGroupBox" name="groupBox_9">
+     <widget class="QGroupBox" name="Drivers_Overview">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -3362,7 +3381,7 @@
       <property name="title">
        <string>Drivers Overview</string>
       </property>
-      <widget class="QLabel" name="label_44">
+      <widget class="QLabel" name="right_driver_vol_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -3388,7 +3407,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_48">
+      <widget class="QLabel" name="left_driver_vol_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -3414,7 +3433,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QProgressBar" name="progressBar">
+      <widget class="QProgressBar" name="left_driver_vol_indicator">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3436,7 +3455,7 @@
         <string>%v mV</string>
        </property>
       </widget>
-      <widget class="QProgressBar" name="progressBar_2">
+      <widget class="QProgressBar" name="right_driver_vol_indicator">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3459,38 +3478,14 @@
        </property>
       </widget>
      </widget>
-     <widget class="QLabel" name="label_79">
-      <property name="geometry">
-       <rect>
-        <x>590</x>
-        <y>600</y>
-        <width>181</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color:rgb(170, 0, 0)</string>
-      </property>
-      <property name="text">
-       <string>Fatal Messages</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <zorder>groupBox_4</zorder>
-     <zorder>groupBox</zorder>
-     <zorder>groupBox_2</zorder>
-     <zorder>groupBox_3</zorder>
-     <zorder>groupBox_5</zorder>
-     <zorder>label_50</zorder>
-     <zorder>label_51</zorder>
-     <zorder>label_52</zorder>
-     <zorder>label_53</zorder>
-     <zorder>groupBox_9</zorder>
-     <zorder>label_79</zorder>
+     <zorder>Robot_Position</zorder>
+     <zorder>RC_Channels</zorder>
+     <zorder>Connexions_Overview</zorder>
+     <zorder>Robot_Status</zorder>
+     <zorder>Terminal_Messages_1</zorder>
+     <zorder>Drivers_Overview</zorder>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="QWidget" name="Connections">
      <attribute name="icon">
       <iconset>
        <normaloff>:/images/noun_connection_1583671.png</normaloff>:/images/noun_connection_1583671.png</iconset>
@@ -3498,7 +3493,7 @@
      <attribute name="title">
       <string>Connections</string>
      </attribute>
-     <widget class="QGroupBox" name="groupBox_6">
+     <widget class="QGroupBox" name="IMU">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -3510,7 +3505,7 @@
       <property name="title">
        <string>IMU</string>
       </property>
-      <widget class="QLabel" name="label_38">
+      <widget class="QLabel" name="IMU_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -3535,7 +3530,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_39">
+      <widget class="QLabel" name="IMU_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -3585,7 +3580,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_41">
+      <widget class="QLabel" name="IMU_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3613,7 +3608,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="IMU_vel_serial_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3718,7 +3713,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QComboBox" name="comboBox_2">
+      <widget class="QComboBox" name="IMU_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3740,7 +3735,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="IMU_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3762,7 +3757,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_7">
+      <widget class="QPushButton" name="IMU_autodetect">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -3788,7 +3783,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_7">
+     <widget class="QGroupBox" name="Arduino_RC">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -3800,7 +3795,7 @@
       <property name="title">
        <string>Arduino RC</string>
       </property>
-      <widget class="QLabel" name="label_42">
+      <widget class="QLabel" name="RC_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -3825,7 +3820,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_43">
+      <widget class="QLabel" name="RC_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -3850,7 +3845,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_45">
+      <widget class="QLabel" name="RC_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3878,7 +3873,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_4">
+      <widget class="QComboBox" name="RC_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3900,7 +3895,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="RC_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -3922,7 +3917,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_8">
+      <widget class="QPushButton" name="RC_autodetect">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -3945,7 +3940,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_8">
+     <widget class="QGroupBox" name="Main_Arduino">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -3957,7 +3952,7 @@
       <property name="title">
        <string>Main Arduino</string>
       </property>
-      <widget class="QLabel" name="label_46">
+      <widget class="QLabel" name="MainArduino_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -3982,7 +3977,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_47">
+      <widget class="QLabel" name="MainArduino_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4007,7 +4002,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_49">
+      <widget class="QLabel" name="MainArduino_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4035,7 +4030,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_6">
+      <widget class="QComboBox" name="MainArduino_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4057,7 +4052,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="MainArduino_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4079,7 +4074,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_9">
+      <widget class="QPushButton" name="MainArduino_autodetect">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -4102,7 +4097,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_16">
+     <widget class="QGroupBox" name="Actuador_X">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4114,7 +4109,7 @@
       <property name="title">
        <string>Actuador X</string>
       </property>
-      <widget class="QLabel" name="label_114">
+      <widget class="QLabel" name="Act_X_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4139,7 +4134,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_115">
+      <widget class="QLabel" name="Act_X_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4164,7 +4159,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_116">
+      <widget class="QLabel" name="Act_X_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4192,7 +4187,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_11">
+      <widget class="QComboBox" name="Act_X_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4214,7 +4209,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_18">
+      <widget class="QPushButton" name="Act_X_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4236,7 +4231,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_19">
+      <widget class="QPushButton" name="Act_X_autodetect">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -4259,7 +4254,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_17">
+     <widget class="QGroupBox" name="Actuador_Y">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4271,7 +4266,7 @@
       <property name="title">
        <string>Actuador Y</string>
       </property>
-      <widget class="QLabel" name="label_122">
+      <widget class="QLabel" name="Act_Y_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4296,7 +4291,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_123">
+      <widget class="QLabel" name="Act_Y_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4321,7 +4316,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_124">
+      <widget class="QLabel" name="Act_Y_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4349,7 +4344,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_13">
+      <widget class="QComboBox" name="Act_Y_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4371,7 +4366,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_22">
+      <widget class="QPushButton" name="Act_Y_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4393,7 +4388,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_23">
+      <widget class="QPushButton" name="Act_Y_autodetect">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -4416,7 +4411,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_18">
+     <widget class="QGroupBox" name="Actuador_Z">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4428,7 +4423,7 @@
       <property name="title">
        <string>Actuador Z</string>
       </property>
-      <widget class="QLabel" name="label_125">
+      <widget class="QLabel" name="Act_Z_label_3">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4453,7 +4448,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_126">
+      <widget class="QLabel" name="Act_Z_port_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -4478,7 +4473,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_127">
+      <widget class="QLabel" name="Act_Z_label_4">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4506,7 +4501,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_14">
+      <widget class="QComboBox" name="Act_Z_port_list">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4528,7 +4523,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_24">
+      <widget class="QPushButton" name="Act_Z_connect">
        <property name="geometry">
         <rect>
          <x>230</x>
@@ -4550,7 +4545,7 @@
         <string>Connect</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_25">
+      <widget class="QPushButton" name="Act_Z_autodetect">
        <property name="geometry">
         <rect>
          <x>40</x>
@@ -4574,7 +4569,7 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_3">
+    <widget class="QWidget" name="GPS_map">
      <attribute name="icon">
       <iconset>
        <normaloff>:/images/noun_Map_972135.png</normaloff>:/images/noun_Map_972135.png</iconset>
@@ -4582,7 +4577,7 @@
      <attribute name="title">
       <string>GPS / Map</string>
      </attribute>
-     <widget class="QOSM" name="graphicsView_3">
+     <widget class="QOSM" name="Map_Position_fullview">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -4593,7 +4588,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_4">
+    <widget class="QWidget" name="Sensors">
      <attribute name="icon">
       <iconset>
        <normaloff>:/images/noun_Graph_1495300.png</normaloff>:/images/noun_Graph_1495300.png</iconset>
@@ -4601,7 +4596,7 @@
      <attribute name="title">
       <string>Sensors</string>
      </attribute>
-     <widget class="PlotWidget" name="graphicsView_6">
+     <widget class="PlotWidget" name="Heading_Orientation_view">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4611,7 +4606,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="PlotWidget" name="graphicsView_7">
+     <widget class="PlotWidget" name="Northing_Position_view">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4621,7 +4616,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="PlotWidget" name="graphicsView_8">
+     <widget class="PlotWidget" name="Easting_Position_view">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4631,7 +4626,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="PlotWidget" name="graphicsView_9">
+     <widget class="PlotWidget" name="Robot_X_Velocity_view">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4641,7 +4636,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="PlotWidget" name="graphicsView_11">
+     <widget class="PlotWidget" name="Robot_Ang_Velocity_view">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4651,7 +4646,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label_32">
+     <widget class="QLabel" name="Easting_Position_label">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4676,7 +4671,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_33">
+     <widget class="QLabel" name="Robot_X_Velocity_label">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4701,7 +4696,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_34">
+     <widget class="QLabel" name="Northing_Position_label">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4726,7 +4721,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_36">
+     <widget class="QLabel" name="Heading_Orientation_label">
       <property name="geometry">
        <rect>
         <x>40</x>
@@ -4751,7 +4746,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_37">
+     <widget class="QLabel" name="Robot_Ang_Velocity_label">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4776,7 +4771,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="PlotWidget" name="graphicsView_10">
+     <widget class="PlotWidget" name="Robot_Y_Velocity_view">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4786,7 +4781,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label_35">
+     <widget class="QLabel" name="Robot_Y_Velocity_label">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -4812,7 +4807,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_5">
+    <widget class="QWidget" name="Test_Sequences">
      <attribute name="icon">
       <iconset>
        <normaloff>:/images/noun_sequence_121702.png</normaloff>:/images/noun_sequence_121702.png</iconset>
@@ -4820,7 +4815,7 @@
      <attribute name="title">
       <string>Test Sequences</string>
      </attribute>
-     <widget class="QGroupBox" name="groupBox_10">
+     <widget class="QGroupBox" name="Trajectory_Options">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -4866,7 +4861,7 @@
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_60">
+      <widget class="QLabel" name="Circular_Trajectory_label">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -4888,7 +4883,7 @@
         <string>Circular Trajectory</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_61">
+      <widget class="QLabel" name="Lineal_Trajectory_label">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -4910,7 +4905,7 @@
         <string>Linear Trajectory</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_62">
+      <widget class="QLabel" name="Path_Trajectory_label">
        <property name="geometry">
         <rect>
          <x>110</x>
@@ -4932,7 +4927,7 @@
         <string>Custom CSV Trajectory</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_63">
+      <widget class="QLabel" name="Manual_Trajectory_label">
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -4954,7 +4949,7 @@
         <string>Manual Trajectory</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="Open_Trajectory_File_Button">
        <property name="geometry">
         <rect>
          <x>370</x>
@@ -4976,7 +4971,7 @@
         <string>Open Trajectory File</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_64">
+      <widget class="QLabel" name="Distance_label">
        <property name="geometry">
         <rect>
          <x>370</x>
@@ -5001,7 +4996,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_65">
+      <widget class="QLabel" name="Diameter_label">
        <property name="geometry">
         <rect>
          <x>360</x>
@@ -5026,7 +5021,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox">
+      <widget class="QDoubleSpinBox" name="Distance_SpinBox">
        <property name="geometry">
         <rect>
          <x>478</x>
@@ -5054,7 +5049,7 @@
         <double>3.000000000000000</double>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+      <widget class="QDoubleSpinBox" name="Diameter_SpinBox">
        <property name="geometry">
         <rect>
          <x>480</x>
@@ -5232,7 +5227,7 @@
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_12">
+      <widget class="QPushButton" name="Run_Camera_Primesense_Button">
        <property name="geometry">
         <rect>
          <x>370</x>
@@ -5282,7 +5277,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_102">
+      <widget class="QLabel" name="Decision_Making_label">
        <property name="geometry">
         <rect>
          <x>110</x>
@@ -5301,11 +5296,11 @@
         </font>
        </property>
        <property name="text">
-        <string>Desicion Making</string>
+        <string>Decision Making</string>
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_12">
+     <widget class="QGroupBox" name="Movement_Previews">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -5323,23 +5318,23 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="PlotWidget" name="graphicsView_13">
+      <widget class="PlotWidget" name="Movement_Previews_view">
        <property name="geometry">
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>521</width>
-         <height>541</height>
+         <width>531</width>
+         <height>521</height>
         </rect>
        </property>
       </widget>
-      <widget class="QLabel" name="label_78">
+      <widget class="QLabel" name="Representation_label">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>590</y>
-         <width>541</width>
-         <height>20</height>
+         <x>-10</x>
+         <y>555</y>
+         <width>571</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="font">
@@ -5359,22 +5354,22 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_13">
+     <widget class="QGroupBox" name="Terminal_Messages_2">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>5</x>
         <y>370</y>
-        <width>681</width>
+        <width>696</width>
         <height>251</height>
        </rect>
       </property>
       <property name="title">
        <string>Terminal Messages</string>
       </property>
-      <widget class="QTextEdit" name="textEdit_2">
+      <widget class="QTextEdit" name="Terminal_2">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>15</x>
          <y>40</y>
          <width>661</width>
          <height>191</height>
@@ -5393,10 +5388,10 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_66">
+      <widget class="QLabel" name="Info_Messages_1">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>115</x>
          <y>230</y>
          <width>181</width>
          <height>21</height>
@@ -5412,10 +5407,10 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_67">
+      <widget class="QLabel" name="Debug_Messages_1">
        <property name="geometry">
         <rect>
-         <x>-30</x>
+         <x>-15</x>
          <y>230</y>
          <width>181</width>
          <height>21</height>
@@ -5431,10 +5426,10 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_80">
+      <widget class="QLabel" name="Fatal_Messages_1">
        <property name="geometry">
         <rect>
-         <x>510</x>
+         <x>525</x>
          <y>230</y>
          <width>181</width>
          <height>21</height>
@@ -5450,10 +5445,10 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_68">
+      <widget class="QLabel" name="Warning_Messages_1">
        <property name="geometry">
         <rect>
-         <x>240</x>
+         <x>255</x>
          <y>230</y>
          <width>181</width>
          <height>21</height>
@@ -5463,16 +5458,16 @@
         <string notr="true">color:rgb(255, 170, 0)</string>
        </property>
        <property name="text">
-        <string>Warning Messages</string>
+        <string>Warning_Messages</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_69">
+      <widget class="QLabel" name="Error_Messages_1">
        <property name="geometry">
         <rect>
-         <x>380</x>
+         <x>395</x>
          <y>230</y>
          <width>181</width>
          <height>21</height>
@@ -5489,7 +5484,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_5">
+     <widget class="QPushButton" name="Start_Sequences_Button">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -5535,7 +5530,7 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="Stop_Sequences_Button">
       <property name="geometry">
        <rect>
         <x>420</x>
@@ -5561,7 +5556,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_6">
+    <widget class="QWidget" name="Configuration">
      <attribute name="icon">
       <iconset>
        <normaloff>:/images/noun_configuration_1613324.png</normaloff>:/images/noun_configuration_1613324.png</iconset>
@@ -5569,7 +5564,7 @@
      <attribute name="title">
       <string>Configuration</string>
      </attribute>
-     <widget class="QGroupBox" name="groupBox_14">
+     <widget class="QGroupBox" name="Low_Level_Speed_Controller">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -5581,7 +5576,7 @@
       <property name="title">
        <string>Low-Level Speed Controller (PID)</string>
       </property>
-      <widget class="QLabel" name="label_81">
+      <widget class="QLabel" name="Linear_kp_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5672,7 +5667,7 @@
         <number>4</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_82">
+      <widget class="QLabel" name="Linear_ki_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5697,7 +5692,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_83">
+      <widget class="QLabel" name="Linear_kd_label">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -5722,7 +5717,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_84">
+      <widget class="QLabel" name="Rot_ki_label">
        <property name="geometry">
         <rect>
          <x>310</x>
@@ -5769,7 +5764,7 @@
         <number>4</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_85">
+      <widget class="QLabel" name="Rot_kp_label">
        <property name="geometry">
         <rect>
          <x>310</x>
@@ -5816,7 +5811,7 @@
         <number>4</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_86">
+      <widget class="QLabel" name="Rot_kd_label">
        <property name="geometry">
         <rect>
          <x>310</x>
@@ -5863,7 +5858,7 @@
         <number>4</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_93">
+      <widget class="QLabel" name="Linear_Speed_label">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -5891,7 +5886,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_94">
+      <widget class="QLabel" name="Rotacional_Speed_label">
        <property name="geometry">
         <rect>
          <x>320</x>
@@ -5920,7 +5915,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QGroupBox" name="groupBox_15">
+     <widget class="QGroupBox" name="High_Level_Position_Controller">
       <property name="geometry">
        <rect>
         <x>650</x>
@@ -5932,7 +5927,7 @@
       <property name="title">
        <string>High-Level Position Controller</string>
       </property>
-      <widget class="QLabel" name="label_87">
+      <widget class="QLabel" name="HL_Pos_ki_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -5957,7 +5952,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_88">
+      <widget class="QLabel" name="HL_Pos_kd_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -5982,7 +5977,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_89">
+      <widget class="QLabel" name="HL_Pos_kp_label">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -6106,7 +6101,7 @@
        <string>Write Values</string>
       </property>
      </widget>
-     <widget class="QGroupBox" name="groupBox_11">
+     <widget class="QGroupBox" name="Recording_Options">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -6121,11 +6116,11 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QLabel" name="label_59">
+      <widget class="QLabel" name="ON_BAG_label">
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>190</y>
+         <y>205</y>
          <width>31</width>
          <height>17</height>
         </rect>
@@ -6143,19 +6138,19 @@
         <string>ON</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_58">
+      <widget class="QLabel" name="BAG_Recording_label">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
-         <width>111</width>
-         <height>17</height>
+         <y>150</y>
+         <width>131</width>
+         <height>26</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <family>URW Palladio L</family>
-         <pointsize>12</pointsize>
+         <pointsize>14</pointsize>
          <weight>75</weight>
          <italic>true</italic>
          <bold>true</bold>
@@ -6165,11 +6160,11 @@
         <string>BAG Recording</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_55">
+      <widget class="QLabel" name="OFF_CSV_label">
        <property name="geometry">
         <rect>
          <x>80</x>
-         <y>100</y>
+         <y>105</y>
          <width>31</width>
          <height>17</height>
         </rect>
@@ -6187,11 +6182,11 @@
         <string>OFF</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_57">
+      <widget class="QLabel" name="OFF_BAG_label">
        <property name="geometry">
         <rect>
          <x>80</x>
-         <y>190</y>
+         <y>205</y>
          <width>31</width>
          <height>17</height>
         </rect>
@@ -6209,11 +6204,11 @@
         <string>OFF</string>
        </property>
       </widget>
-      <widget class="QSlider" name="horizontalSlider_2">
+      <widget class="QSlider" name="BAG_Slider">
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>160</y>
+         <y>175</y>
          <width>71</width>
          <height>29</height>
         </rect>
@@ -6234,19 +6229,19 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLabel" name="label_56">
+      <widget class="QLabel" name="CSV_Recording_label">
        <property name="geometry">
         <rect>
          <x>20</x>
          <y>50</y>
-         <width>111</width>
-         <height>17</height>
+         <width>131</width>
+         <height>26</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <family>URW Palladio L</family>
-         <pointsize>12</pointsize>
+         <pointsize>14</pointsize>
          <weight>75</weight>
          <italic>true</italic>
          <bold>true</bold>
@@ -6256,11 +6251,11 @@
         <string>CSV Recording</string>
        </property>
       </widget>
-      <widget class="QSlider" name="horizontalSlider">
+      <widget class="QSlider" name="CSV_Slider">
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>70</y>
+         <y>75</y>
          <width>71</width>
          <height>29</height>
         </rect>
@@ -6280,12 +6275,15 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
+       <property name="tickInterval">
+        <number>0</number>
+       </property>
       </widget>
-      <widget class="QLabel" name="label_54">
+      <widget class="QLabel" name="ON_CSV_label">
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>100</y>
+         <y>105</y>
          <width>31</width>
          <height>17</height>
         </rect>
@@ -6304,16 +6302,191 @@
        </property>
       </widget>
      </widget>
+     <widget class="QGroupBox" name="Treatments">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>290</y>
+        <width>316</width>
+        <height>241</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Treatments</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <widget class="QPushButton" name="Fumigation_Button">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>75</y>
+         <width>181</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(79, 158, 0);</string>
+       </property>
+       <property name="text">
+        <string>Fumigation</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Nutrition_Button">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>120</y>
+         <width>181</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(79, 158, 0);</string>
+       </property>
+       <property name="text">
+        <string>Nutrition</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="Weeding_Button">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>165</y>
+         <width>181</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(79, 158, 0);</string>
+       </property>
+       <property name="text">
+        <string>Weeding</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Fumigation_label">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>80</y>
+         <width>116</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 0, 0)</string>
+       </property>
+       <property name="text">
+        <string>OFF</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Nutrition_label">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>125</y>
+         <width>116</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 0, 0)</string>
+       </property>
+       <property name="text">
+        <string>OFF</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="Weeding_label">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>170</y>
+         <width>116</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>URW Palladio L</family>
+         <pointsize>12</pointsize>
+         <weight>75</weight>
+         <italic>true</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color:rgb(255, 0, 0)</string>
+       </property>
+       <property name="text">
+        <string>OFF</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </widget>
     </widget>
-    <widget class="QWidget" name="tab_7">
+    <widget class="QWidget" name="XYZ_System">
      <attribute name="title">
       <string>Actuadores</string>
      </attribute>
-     <widget class="QLabel" name="label_99">
+     <widget class="QLabel" name="Actuador_Z_label">
       <property name="geometry">
        <rect>
-        <x>620</x>
-        <y>460</y>
+        <x>615</x>
+        <y>470</y>
         <width>111</width>
         <height>17</height>
        </rect>
@@ -6331,7 +6504,7 @@
        <string>Actuador Z</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_100">
+     <widget class="QLabel" name="Actuador_X_label">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -6353,10 +6526,10 @@
        <string>Actuador X</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="RETROCEDERZ">
+     <widget class="QPushButton" name="Go_Back_Z">
       <property name="geometry">
        <rect>
-        <x>750</x>
+        <x>650</x>
         <y>380</y>
         <width>100</width>
         <height>25</height>
@@ -6817,7 +6990,7 @@
        <string>Retroceder</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_101">
+     <widget class="QLabel" name="Actuador_Y_label">
       <property name="geometry">
        <rect>
         <x>1000</x>
@@ -6839,7 +7012,7 @@
        <string>Actuador Y</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="RETROCEDERY">
+     <widget class="QPushButton" name="Go_Back_Y">
       <property name="geometry">
        <rect>
         <x>930</x>
@@ -7303,7 +7476,7 @@
        <string>Retroceder</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="Salir">
+     <widget class="QPushButton" name="Leave">
       <property name="geometry">
        <rect>
         <x>1090</x>
@@ -7325,7 +7498,7 @@
        <string>Salir</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="PARADAY">
+     <widget class="QPushButton" name="Stop_Y">
       <property name="geometry">
        <rect>
         <x>1000</x>
@@ -7789,11 +7962,11 @@
        <string>STOP</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="AVANZARZ">
+     <widget class="QPushButton" name="Go_Forward_Z">
       <property name="geometry">
        <rect>
-        <x>760</x>
-        <y>540</y>
+        <x>655</x>
+        <y>590</y>
         <width>100</width>
         <height>25</height>
        </rect>
@@ -8253,7 +8426,7 @@
        <string>Avanzar</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="RETROCEDERX">
+     <widget class="QPushButton" name="Go_Back_X">
       <property name="geometry">
        <rect>
         <x>310</x>
@@ -8717,7 +8890,7 @@
        <string>Retroceder</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="AVANZARX">
+     <widget class="QPushButton" name="Go_Forward_X">
       <property name="geometry">
        <rect>
         <x>960</x>
@@ -9181,7 +9354,7 @@
        <string>Avanzar</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="AVANZARY">
+     <widget class="QPushButton" name="Go_Forward_Y">
       <property name="geometry">
        <rect>
         <x>280</x>
@@ -9645,11 +9818,11 @@
        <string>Avanzar</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="PARADAZ">
+     <widget class="QPushButton" name="Stop_Z">
       <property name="geometry">
        <rect>
-        <x>620</x>
-        <y>480</y>
+        <x>615</x>
+        <y>490</y>
         <width>111</width>
         <height>25</height>
        </rect>
@@ -10109,7 +10282,7 @@
        <string>STOP</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="PARADAX">
+     <widget class="QPushButton" name="Stop_X">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -10573,7 +10746,7 @@
        <string>STOP</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_103">
+     <widget class="QLabel" name="XYZ_img_label">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -11052,20 +11225,20 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <zorder>label_103</zorder>
-     <zorder>label_99</zorder>
-     <zorder>label_100</zorder>
-     <zorder>RETROCEDERZ</zorder>
-     <zorder>label_101</zorder>
-     <zorder>RETROCEDERY</zorder>
-     <zorder>Salir</zorder>
-     <zorder>PARADAY</zorder>
-     <zorder>AVANZARZ</zorder>
-     <zorder>RETROCEDERX</zorder>
-     <zorder>AVANZARX</zorder>
-     <zorder>AVANZARY</zorder>
-     <zorder>PARADAZ</zorder>
-     <zorder>PARADAX</zorder>
+     <zorder>XYZ_img_label</zorder>
+     <zorder>Actuador_Z_label</zorder>
+     <zorder>Actuador_X_label</zorder>
+     <zorder>Go_Back_Z</zorder>
+     <zorder>Actuador_Y_label</zorder>
+     <zorder>Go_Back_Y</zorder>
+     <zorder>Leave</zorder>
+     <zorder>Stop_Y</zorder>
+     <zorder>Go_Forward_Z</zorder>
+     <zorder>Go_Back_X</zorder>
+     <zorder>Go_Forward_X</zorder>
+     <zorder>Go_Forward_Y</zorder>
+     <zorder>Stop_Z</zorder>
+     <zorder>Stop_X</zorder>
     </widget>
    </widget>
   </widget>
@@ -11089,7 +11262,7 @@
    </property>
    <widget class="QMenu" name="menuCeres_GUI">
     <property name="title">
-     <string>Ceres GUI</string>
+     <string>Agrobot - UMNG</string>
     </property>
     <addaction name="separator"/>
     <addaction name="separator"/>
