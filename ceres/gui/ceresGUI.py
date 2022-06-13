@@ -288,7 +288,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		global myapp, procs
 		flag = True
 		for i in procs:
-			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader":
+			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader" or i[0]=="PrimeSense":
 				flag=False
 				break
 		if flag:
@@ -311,6 +311,13 @@ class CeresApplication(QtWidgets.QMainWindow):
 				procs.append(["poseController", poseController])
 				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
+			elif myapp.ui.verticalSlider.value()==4:
+				#poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
+				#procs.append(["poseController", poseController])
+				#pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
+				#procs.append(["PathReader", pathReader])
+				PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense.py', '__name:=ceres_PrimeSense']) 
+				procs.append(["PrimeSense", PrimeSense])
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")
 			
@@ -326,15 +333,19 @@ class CeresApplication(QtWidgets.QMainWindow):
 					rospy.logwarn("[GUI] Pose Controller Closed.")
 					flag=True
 					break
-
 				if i[0]=="PathReader":
 					i[1].kill()
 					procs.pop(procs.index(i))
 					rospy.logwarn("[GUI] Test aborded.")
 					flag=True
-					break
-
+					brea
 				if i[0]=="PathGenerator":
+					i[1].kill()
+					procs.pop(procs.index(i))
+					rospy.logwarn("[GUI] Test aborded.")
+					flag=True
+					break
+				if i[0]=="PrimeSense":
 					i[1].kill()
 					procs.pop(procs.index(i))
 					rospy.logwarn("[GUI] Test aborded.")
@@ -543,6 +554,12 @@ def refreshProcs():
 							j[1].kill()
 							procs.pop(procs.index(j))
 							rospy.logwarn("[GUI] Pose Controller Closed.")
+							flag=True
+							break
+						if j[0]=="PrimeSense":
+							j[1].kill()
+							procs.pop(procs.index(j))
+							rospy.logwarn("[GUI] Camera PrimeSense Closed.")
 							flag=True
 							break
 						if j[0]=="csvLogger":
@@ -764,7 +781,7 @@ def refreshData():
 	myapp.ui.label_74.setPixmap(pixmap)
 	
 	img = QImage()
-	img.load(os.path.join(path, 'ceres.png'))
+	img.load(os.path.join(path, 'xyz.png'))
 	pixmap = QPixmap(img)
 	transform = QTransform().rotate((var[19][3]*180.0/3.14))
 	pixmap = pixmap.transformed(transform, Qt.SmoothTransformation)
