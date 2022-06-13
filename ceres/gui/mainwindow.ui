@@ -1399,7 +1399,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -3635,7 +3635,7 @@
         <bool>true</bool>
        </property>
        <property name="currentText">
-        <string/>
+        <string>115200</string>
        </property>
        <item>
         <property name="text">
@@ -5249,6 +5249,9 @@
          <italic>true</italic>
          <bold>true</bold>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(79, 158, 0);</string>
        </property>
        <property name="text">
         <string>Run Camera Primesense</string>
@@ -11072,14 +11075,22 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>24</height>
+     <height>33</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>URW Palladio L</family>
+     <pointsize>16</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
    </property>
    <widget class="QMenu" name="menuCeres_GUI">
     <property name="title">
      <string>Ceres GUI</string>
     </property>
-    <addaction name="actionAbout"/>
     <addaction name="separator"/>
     <addaction name="separator"/>
    </widget>
@@ -11089,6 +11100,20 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>URW Palladio L</family>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <italic>true</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>More Information</string>
    </property>
   </action>
  </widget>

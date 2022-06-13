@@ -45,6 +45,8 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.pushButton_24.clicked.connect(self.connectArduinoAct_Z)
 		self.ui.pushButton_5.clicked.connect(self.startPathGenerator)
 		self.ui.pushButton_6.clicked.connect(self.stopPathGenerator)
+		self.ui.pushButton_12.clicked.connect(self.connectCameraPrime)
+
 
 
 		self.ui.pushButton_7.clicked.connect(self.detectIMU)
@@ -166,6 +168,29 @@ class CeresApplication(QtWidgets.QMainWindow):
 				procs.pop(procs.index(i))
 				break
 	
+
+	def connectCameraPrime(self):
+		global procs
+		self.ui.pushButton_12.setText("Stop Camera Primesense")
+		self.ui.pushButton_12.setStyleSheet('color: red;')
+		self.ui.pushButton_12.clicked.disconnect(self.connectCameraPrime)
+		self.ui.pushButton_12.clicked.connect(self.disconnectCameraPrime)
+		PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense.py', '__name:=ceres_PrimeSense']) 
+		procs.append(["PrimeSense", PrimeSense])
+		
+	def disconnectCameraPrime(self):
+		global procs
+		self.ui.pushButton_12.setText("Run Camera Primesense")
+		self.ui.pushButton_12.setStyleSheet('color: green;')
+		self.ui.pushButton_12.clicked.disconnect(self.disconnectCameraPrime)
+		self.ui.pushButton_12.clicked.connect(self.connectCameraPrime)
+		for i in procs:
+			if i[0]=="PrimeSense":
+				i[1].kill()
+				procs.pop(procs.index(i))
+				break
+
+
 	def connectArduinoAct_X(self):
 		global procs
 		self.ui.pushButton_18.setText("Disconnect")
@@ -288,7 +313,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		global myapp, procs
 		flag = True
 		for i in procs:
-			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader" or i[0]=="PrimeSense":
+			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader":
 				flag=False
 				break
 		if flag:
@@ -309,15 +334,14 @@ class CeresApplication(QtWidgets.QMainWindow):
 			elif myapp.ui.verticalSlider.value()==3:
 				poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
 				procs.append(["poseController", poseController])
-				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
+				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresDesiciMaking.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
 			elif myapp.ui.verticalSlider.value()==4:
+				pass
 				#poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
 				#procs.append(["poseController", poseController])
 				#pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				#procs.append(["PathReader", pathReader])
-				PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense.py', '__name:=ceres_PrimeSense']) 
-				procs.append(["PrimeSense", PrimeSense])
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")
 			
@@ -338,14 +362,8 @@ class CeresApplication(QtWidgets.QMainWindow):
 					procs.pop(procs.index(i))
 					rospy.logwarn("[GUI] Test aborded.")
 					flag=True
-					brea
-				if i[0]=="PathGenerator":
-					i[1].kill()
-					procs.pop(procs.index(i))
-					rospy.logwarn("[GUI] Test aborded.")
-					flag=True
 					break
-				if i[0]=="PrimeSense":
+				if i[0]=="PathGenerator":
 					i[1].kill()
 					procs.pop(procs.index(i))
 					rospy.logwarn("[GUI] Test aborded.")
@@ -514,6 +532,14 @@ def refreshProcs():
 				myapp.ui.pushButton_8.setEnabled(True)
 				break
 
+			elif  i[0] == "PrimeSense":
+				procs.pop(procs.index(i))
+				myapp.ui.pushButton_12.setText("Run Camera Primesense")
+				myapp.ui.pushButton_12.setStyleSheet('color: green;')
+				myapp.ui.pushButton_12.clicked.disconnect(myapp.disconnectCameraPrime)
+				myapp.ui.pushButton_12.clicked.connect(myapp.connectCameraPrime)
+				break
+
 			elif  i[0] == "ArduinoAct_X":
 				procs.pop(procs.index(i))
 				myapp.ui.label_116.setText("<font color='#FF0000'>Not Connected</font>")
@@ -554,12 +580,6 @@ def refreshProcs():
 							j[1].kill()
 							procs.pop(procs.index(j))
 							rospy.logwarn("[GUI] Pose Controller Closed.")
-							flag=True
-							break
-						if j[0]=="PrimeSense":
-							j[1].kill()
-							procs.pop(procs.index(j))
-							rospy.logwarn("[GUI] Camera PrimeSense Closed.")
 							flag=True
 							break
 						if j[0]=="csvLogger":
@@ -809,6 +829,9 @@ def refreshTrajectory():
 		else:
 			myapp.ui.pushButton_5.setEnabled(True)
 			points=readPath()
+	elif myapp.ui.verticalSlider.value()==4:
+		myapp.ui.pushButton_5.setEnabled(True)
+		points=calculateLinePoints(myapp.ui.doubleSpinBox.value())
 	else:
 		points=[[0.0],[0.0]]
 	myapp.ui.graphicsView_13.clear()
