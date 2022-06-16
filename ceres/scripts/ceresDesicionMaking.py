@@ -433,7 +433,7 @@ ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.a
 def Automatico ():
     global stop_threads, DisG, DisO, DisO2, DisSave,GPSSave,situacion
 
-    DisO2 = [[1500, 180, 300], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
+    DisO2 = [[479, 117, 1219], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
     DisSave = []  ##variable para guardar backup de coordenadas
     estado = []   ## variable para guardar estado de la planta por mdeio de la jetson
     ##situacion= jetson   ## señal de deteccion de la jetson
@@ -461,13 +461,13 @@ def Automatico ():
         #time.sleep(0.001)
         if stop_threads:
             if contador<2000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [479, 117, 1219]
             elif contador<4000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [428, 304, 1883]
             elif contador < 6000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [194, 302, 1883]
             elif contador < 8000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [116, 118, 1197]
             elif contador == 10000:
                 contador=0
      ###############################################################################################
