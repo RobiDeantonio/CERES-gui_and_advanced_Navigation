@@ -461,13 +461,13 @@ def Automatico ():
         #time.sleep(0.001)
         if stop_threads:
             if contador<2000:
-                DisO2 = [479, 117, 1219]
+                DisO2 = [500, 117, 1000]
             elif contador<4000:
-                DisO2 = [428, 304, 1883]
+                DisO2 = [427, 304, 1883]
             elif contador < 6000:
-                DisO2 = [194, 302, 1883]
+                DisO2 = [210, 302, 1873]
             elif contador < 8000:
-                DisO2 = [116, 118, 1197]
+                DisO2 = [130, 118, 100]
             elif contador == 10000:
                 contador=0
      ###############################################################################################
