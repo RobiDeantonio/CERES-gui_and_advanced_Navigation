@@ -46,6 +46,8 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.Start_Sequences_Button.clicked.connect(self.startPathGenerator)
 		self.ui.Stop_Sequences_Button.clicked.connect(self.stopPathGenerator)
 		self.ui.Run_Camera_Primesense_Button.clicked.connect(self.connectCameraPrime)
+		
+		self.ui.Water_Pump_Button.clicked.connect(self.runWaterPump)
 
 
 
@@ -190,6 +192,23 @@ class CeresApplication(QtWidgets.QMainWindow):
 				procs.pop(procs.index(i))
 				break
 
+	def runWaterPump(self):
+		global procs
+		self.ui.Water_Pump_Button.setText("Stop Water Pump")
+		self.ui.Water_Pump_Button.setStyleSheet('color: red;')
+		self.ui.Water_Pump_Button.clicked.disconnect(self.runWaterPump)
+		self.ui.Water_Pump_Button.clicked.connect(self.stopWaterPump)
+		subprocess.Popen(['ceres/scripts/smc_linux/SmcCmd','--resume', '--speed', '1000']) 
+		self.ui.WaterPump_label.setText("<font color='#00AA00'>ON</font>")
+		
+	def stopWaterPump(self):
+		global procs
+		self.ui.WaterPump_label.setText("<font color=''#FF0000'>OFF</font>")
+		self.ui.Water_Pump_Button.setText("Run Water Pump")
+		self.ui.Water_Pump_Button.setStyleSheet('color: green;')
+		self.ui.Water_Pump_Button.clicked.disconnect(self.stopWaterPump)
+		self.ui.Water_Pump_Button.clicked.connect(self.runWaterPump)
+		subprocess.Popen(['ceres/scripts/smc_linux/SmcCmd','--stop'])
 
 	def connectArduinoAct_X(self):
 		global procs

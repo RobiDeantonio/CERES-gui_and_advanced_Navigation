@@ -10,9 +10,14 @@
 #  Date:          06-06-2022
 ###############################################################################################
 # Importations:
+
+import numpy as np
+import math
 import rospy
 import std_msgs.msg
 from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
 from nav_msgs.msg import Path
 from sensor_msgs.msg import NavSatFix
 from nav_msgs.msg import Odometry
@@ -22,6 +27,8 @@ import tf
 import utm
 import os.path
 import sys
+import os
+import time
 ###############################################################################################
 # Functions Definitions:
 # callbackRC: Acquire RC data, to check RC Emergency Stop state.
@@ -57,6 +64,132 @@ def callbackImu(msg):
 	initPose[1]=msg.pose.pose.position.y
 	initOrientation=euler[2]
 	imuSub.unregister()	#Once first message is received, disconnect the subscriber.
+
+
+###############################################################################################
+# Functions Definitions:
+# SensorKalman: creacion de filtro para controlar actuadores X Y Z.
+class SensorKalman:
+    def __init__(self):
+        self.Q_distance=1
+        self.R_measure=1
+        self.distance=0
+        self.P=0
+    def getDistance(self,newDistance,dt):
+        self.P+=self.Q_distance*dt
+        S=self.P+self.R_measure
+        K=self.P/S
+        y=newDistance-self.distance
+        self.distance+=K*y
+        self.P*=(1-K)
+        return self.distance
+    def setDistance(self,newDistance):
+        self.distance=newDistance
+    def getQdistance(self):
+        return self.Q_distance
+    def setQdistance(self,newQ_distance):
+        self.Q_distance=newQ_distance
+    def getRmeasure(self):
+        return self.R_measure
+    def setRmeasure(self,newR_measure):
+        self.R_measure=newR_measure
+
+XX=SensorKalman()
+YY=SensorKalman()#SensorZ
+XXX=SensorKalman()#SensorY
+YYY=SensorKalman()
+XXXX=SensorKalman()#SensorX
+YYYY=SensorKalman()
+
+###############################################################################################
+# Controlador: Funcion para establecer las velocidades de los actuadores
+
+class Controlador:
+    def __init__(self, G, H,K,Ke,Xek,Yk):
+        self._timer = None
+        self.G= G
+        self.H = H
+        self.K = K
+        self.Ke = Ke
+        self.Xek = Xek
+        self.Xek1 = Xek
+        self.Uk = 0
+        self.Uk1 = 0
+        self.Yk = Yk
+        self.Yk1 = Yk
+        self.C=np.array([[1]])
+    def control(self,y,e):
+        #Esta evaluado sin U, por que da cero, si ubiera abria que ponerla
+        self.Yk=y-e
+        Xek = np.matmul(self.G, self.Xek1) + (self.H*self.Uk1) + \
+              np.matmul(self.Ke, (self.Yk1 - np.matmul(self.C, self.Xek1)))
+        print(Xek)
+        print(self.Uk)
+        print(self.Yk)
+        #print(self.K)
+        #self.Uk = -1*(np.matmul(self.K, np.array([[self.Yk]])))
+        self.Uk = -1 * (np.matmul(self.K, Xek))
+        self.Xek1=Xek
+        self.Uk1=self.Uk
+        self.Yk1=self.Yk
+    def setXek(self,xestimado):
+        self.Xek1=xestimado
+        self.Xek=xestimado
+
+ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
+ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
+ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
+
+###############################################################################################
+# Envio señales a Arduinos
+
+def ACTUADORX(paquete): #Se inicia el nodo ACTUADORESPY(Actuadores python)
+    rate = rospy.Rate(1000) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        ACTUADORXP.publish(hello_str)
+        rate.sleep()
+
+def ACTUADORY(paquete):
+    rate = rospy.Rate(1000) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        ACTUADORYP.publish(hello_str)
+        rate.sleep()
+
+def ACTUADORZ(paquete):
+    rate = rospy.Rate(1000) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        ACTUADORZP.publish(hello_str)
+        rate.sleep()
+
+###############################################################################################
+# Datos recibidos de la camara
+def callback(data):
+    rospy.loginfo(data.data)
+    global DisG
+    DisG=data.data
+
+def callback2(data):
+    rospy.loginfo(data.data)
+    global DisO
+    DisO=data.data
+
+def UObjeto():
+    rate = rospy.Rate(1000)  # 100 Hz
+    rate.sleep()
+
+def UGripper():
+    rate = rospy.Rate(1000)  # 100 Hz
+    rate.sleep()
+
 ###############################################################################################
 # Main Program
 global gpsSub, initGPS, initOrientation, initPose, imuSub, AU
@@ -84,6 +217,14 @@ frequency=-1
 # Variable that will contains all points data.
 points=[] # [[X, Y, Psi, U, W], [...]]
 
+# define if a number is float or not
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
 # Decrypt .path file
 while(l!=""):
 	# Split each line in space-separated elements
@@ -107,12 +248,37 @@ while(l!=""):
 		# Read Path frequency (i.e. The time between each point)
 		frequency=float(elements[1])
 
-	elif elements[0][0]=="X":
-		# if the first keyword is X, read the point data defined in the line.
-		points.append([float(elements[0][1:]), float(elements[1][1:]), float(elements[2][3:])/180.*3.14, float(elements[3][1:]), float(elements[4][1:])])	
+	elif isfloat(elements[0]):
+		# if the first keyword is numeric, read the point data defined in the line.
+		points.append([float(elements[0]), float(elements[1]), float(elements[2])/180.*3.14, float(elements[3]), float(elements[4])])	
 
 	l=file.readline()
 
+###############################################################################################
+# Variables Globales:
+global Inicio
+
+global guardar
+
+global Contador
+
+global DisG
+global DisO
+global X
+global Y
+global Z
+global stop_threads
+
+Inicio=0
+guardar=0
+Contador = 1
+stop_threads = False  ## variable para empezar el modo automatico
+Dis=0
+DisG=[0,0,0]
+DisO=[0,0,0]
+X=0
+Y=0
+Z=0
 
 # Initialize Robot Initial position variables
 initGPS=[-1000.0, -1000.0]		#GPS
@@ -120,11 +286,30 @@ initOrientation=-1000.0			#IMU
 initPose=[0, 0]                	#IMU
 
 # Initialize ROS Node and Topics 
-rospy.init_node('ceresPathReader')
+rospy.init_node('ceresDecisionMaking')
 gpsSub = rospy.Subscriber('/advanced_navigation_driver/nav_sat_fix', NavSatFix, callbackGPS)
 imuSub = rospy.Subscriber('/advanced_navigation_driver/odom', Odometry, callbackImu)
+rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
+rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
+
 rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
 pub=rospy.Publisher('/ceres/cmd_pose',Odometry,queue_size=25)
+ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
+ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
+ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 
 # Wait for receving IMU data.
 rospy.logwarn("[Pose-Controller]Waiting IMU Initial Position...")
@@ -196,6 +381,8 @@ rospy.loginfo("[Pose-Controller]Sequence loaded... "+str(len(points))+" points d
 rospy.logwarn("[Pose-Controller]Waitting for Emergency Stop Desactivation to EXECUTE the sequence.")
 while AU!=False:
 	pass
+
+
 
 # Publish the Path Points, at the specified Frequency.
 for i in range(len(points)):
