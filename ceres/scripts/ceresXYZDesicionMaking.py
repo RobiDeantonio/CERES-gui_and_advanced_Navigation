@@ -99,6 +99,8 @@ ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
 ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
 from os import remove
 rospy.init_node("ACTUADORESPY",anonymous=True)
+
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -210,6 +212,7 @@ def Automatico ():
         if stop_threads:
             if contador<2000:
                 DisO2 = [1500, 180, 300]
+                
             elif contador<4000:
                 DisO2 = [1500, 180, 300]
             elif contador < 6000:
