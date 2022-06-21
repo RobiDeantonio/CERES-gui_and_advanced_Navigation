@@ -177,7 +177,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		self.ui.Run_Camera_Primesense_Button.setStyleSheet('color: red;')
 		self.ui.Run_Camera_Primesense_Button.clicked.disconnect(self.connectCameraPrime)
 		self.ui.Run_Camera_Primesense_Button.clicked.connect(self.disconnectCameraPrime)
-		PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense.py', '__name:=ceres_PrimeSense']) 
+		PrimeSense = subprocess.Popen(['rosrun', 'ceres', 'CamaraPrimesense_cut.py', '__name:=ceres_PrimeSense']) 
 		procs.append(["PrimeSense", PrimeSense])
 		
 	def disconnectCameraPrime(self):
