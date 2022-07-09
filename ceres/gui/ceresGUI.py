@@ -356,10 +356,10 @@ class CeresApplication(QtWidgets.QMainWindow):
 				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
 			elif myapp.ui.verticalSlider.value()==4:
-				pass
-				poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
-				procs.append(["poseController", poseController])
-				DesiciMaking = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking.py', myapp.path[0], '__name:=ceres_DesiciMaking']) 
+				#pass
+				#poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
+				#procs.append(["poseController", poseController])
+				DesiciMaking = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '1', str(myapp.ui.Diameter_SpinBox.value())]) 
 				procs.append(["DesiciMaking", DesiciMaking])
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")

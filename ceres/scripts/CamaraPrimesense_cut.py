@@ -81,9 +81,9 @@ RESY=480
 # print 'Get b4 video mode', depth_stream.get_video_mode()
 depth_stream.set_video_mode(
     c_api.OniVideoMode(pixelFormat=c_api.OniPixelFormat.ONI_PIXEL_FORMAT_DEPTH_1_MM, resolutionX=ResX, resolutionY=RESY,
-                       fps=20))
+                       fps=30))
 rgb_stream.set_video_mode(c_api.OniVideoMode(pixelFormat=c_api.OniPixelFormat.ONI_PIXEL_FORMAT_RGB888, resolutionX=ResX,
- resolutionY=RESY, fps=20))
+ resolutionY=RESY, fps=30))
 
 ## Check and configure the mirroring -- default is True
 # print 'Mirroring info1', depth_stream.get_mirroring_enabled()
