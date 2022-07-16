@@ -19,105 +19,11 @@ from ceres.msg import CeresRC
 from math import sqrt,cos,sin
 import sys
 
-#ROS y Actuadores librerias
-import threadingJohann as threading
-import numpy as np
-import math
-import os
-import sys
-import time
-from std_msgs.msg import Float32
-from std_msgs.msg import Float32MultiArray
-
-
-###############################################################################################
-# Variables Globales:
-global Inicio
-global guardar
-global Contador
-
-global DisG
-global DisO
-global X
-global Y
-global Z
-global stop_threads
-
-Inicio=0
-guardar=0
-Contador = 1
-stop_threads = False  ## variable para empezar el modo automatico
-Dis=0
-DisG=[0,0,0]
-DisO=[0,0,0]
-X=0
-Y=0
-Z=0
-
-# Controlador: Funcion para establecer las velocidades de los actuadores
-
-class Controlador:
-    def __init__(self, G, H,K,Ke,Xek,Yk):
-        self._timer = None
-        self.G= G
-        self.H = H
-        self.K = K
-        self.Ke = Ke
-        self.Xek = Xek
-        self.Xek1 = Xek
-        self.Uk = 0
-        self.Uk1 = 0
-        self.Yk = Yk
-        self.Yk1 = Yk
-        self.C=np.array([[1]])
-    def control(self,y,e):
-        #Esta evaluado sin U, por que da cero, si ubiera abria que ponerla
-        self.Yk=y-e
-        Xek = np.matmul(self.G, self.Xek1) + (self.H*self.Uk1) + \
-              np.matmul(self.Ke, (self.Yk1 - np.matmul(self.C, self.Xek1)))
-        print(Xek)
-        print(self.Uk)
-        print(self.Yk)
-        #print(self.K)
-        #self.Uk = -1*(np.matmul(self.K, np.array([[self.Yk]])))
-        self.Uk = -1 * (np.matmul(self.K, Xek))
-        self.Xek1=Xek
-        self.Uk1=self.Uk
-        self.Yk1=self.Yk
-    def setXek(self,xestimado):
-        self.Xek1=xestimado
-        self.Xek=xestimado
-
-
-ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
-                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
-                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
-                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-
-###############################################################################################
-# publicacion Topicos ROS:
-ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
-ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
-ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
-from os import remove
-rospy.init_node("ACTUADORESPY",anonymous=True)
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
 ###############################################################################################
 # Functions Definitions:
 # adquire: Initialize ROS Node and all topics subscribers/publishers.
 def adquire():
-	rospy.init_node('PathPlanner', anonymous=True)
+	rospy.init_node('decisionMaking', anonymous=True)
 	rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
 ###############################################################################################
 # callbackRC: receive RC Emergency Stop State to initiate/stop the sequence.
@@ -139,7 +45,7 @@ def generatePath(mode, length, Ax, Vx):
 	rate=rospy.Rate(40)	# Frequency of the Reference Publication
 	flag=True
 	
-	if mode==0 or mode ==4:
+	if mode==0:
 		# Linear Path: Calculate Lenght
 		Dx = length
 	elif mode==1:
@@ -207,6 +113,22 @@ def generatePath(mode, length, Ax, Vx):
 
 
 ###############################################################################################
+###############################################################################################
+###############################################################################################
+# Importations:
+import numpy as np
+import math
+
+#ROS y Actuadores librerias
+import threadingJohann as threading
+from threadingJohann import Timer,Thread,Event
+import os
+import time
+import rospy
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
+
+###############################################################################################
 # Functions Definitions:
 # SensorKalman: creacion de filtro para controlar actuadores X Y Z.
 class SensorKalman:
@@ -241,6 +163,91 @@ YYY=SensorKalman()
 XXXX=SensorKalman()#SensorX
 YYYY=SensorKalman()
 
+###############################################################################################
+# Variables Globales:
+global Inicio
+
+global guardar
+
+global Contador
+
+global DisG
+global DisO
+global X
+global Y
+global Z
+global stop_threads
+
+Inicio=0
+guardar=0
+Contador = 1
+stop_threads = False  ## variable para empezar el modo automatico
+Dis=0
+DisG=[0,0,0]
+DisO=[0,0,0]
+X=0
+Y=0
+Z=0
+
+###############################################################################################
+# publicacion Topicos ROS:
+ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
+ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
+ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
+from os import remove
+rospy.init_node("ACTUADORESPY",anonymous=True)
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+###############################################################################################
+# Controlador: Funcion para establecer las velocidades de los actuadores
+
+class Controlador:
+    def __init__(self, G, H,K,Ke,Xek,Yk):
+        self._timer = None
+        self.G= G
+        self.H = H
+        self.K = K
+        self.Ke = Ke
+        self.Xek = Xek
+        self.Xek1 = Xek
+        self.Uk = 0
+        self.Uk1 = 0
+        self.Yk = Yk
+        self.Yk1 = Yk
+        self.C=np.array([[1]])
+    def control(self,y,e):
+        #Esta evaluado sin U, por que da cero, si ubiera abria que ponerla
+        self.Yk=y-e
+        Xek = np.matmul(self.G, self.Xek1) + (self.H*self.Uk1) + \
+              np.matmul(self.Ke, (self.Yk1 - np.matmul(self.C, self.Xek1)))
+        print(Xek)
+        print(self.Uk)
+        print(self.Yk)
+        #print(self.K)
+        #self.Uk = -1*(np.matmul(self.K, np.array([[self.Yk]])))
+        self.Uk = -1 * (np.matmul(self.K, Xek))
+        self.Xek1=Xek
+        self.Uk1=self.Uk
+        self.Yk1=self.Yk
+    def setXek(self,xestimado):
+        self.Xek1=xestimado
+        self.Xek=xestimado
+
+
+ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
+ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
+ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+                     ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
 
 ###############################################################################################
 # Automatico: secuencia automatica para recorrido de actuadores en "U"
@@ -248,7 +255,7 @@ YYYY=SensorKalman()
 def Automatico ():
     global stop_threads, DisG, DisO, DisO2, DisSave,GPSSave,situacion
 
-    DisO2 = [[1500, 180, 300], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
+    DisO2 = [[479, 117, 1219], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
     DisSave = []  ##variable para guardar backup de coordenadas
     estado = []   ## variable para guardar estado de la planta por mdeio de la jetson
     ##situacion= jetson   ## señal de deteccion de la jetson
@@ -275,78 +282,17 @@ def Automatico ():
     while True:
         #time.sleep(0.001)
         if stop_threads:
-            '''if contador<2000:
-                DisO2 = [1500, 180, 300]
+            if contador<2000:
+                DisO2 = [500, 117, 1000]
             elif contador<4000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [427, 304, 1883]
             elif contador < 6000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [210, 302, 1873]
             elif contador < 8000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [130, 118, 100]
             elif contador == 10000:
                 contador=0
-                '''
-            if contador < 4000: ### dirigir el manipulador al punto de origen en 4000 puntos
-                DisO2 = [1500, 180, 300]
-                Cor=0
-
-            elif Cor==1 or DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100 ) : ### si Cor es 1   o   el griper se encuentra cerca a las cordenadas origen
-
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 1
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[2][1]-100, DisO2[2][1]+100) and DisG[2] in range(DisO2[2][2]-100, DisO2[2][2]+100) and DisG[3] in range(DisO2[2][3]-100, DisO2[2][3]+100) :### si el griper se encuentra cerca a las cordenadas 2
-                    Cor=2
-
-            elif Cor==2 or DisG[1] in range(DisO2[2][1]-100, DisO2[2][1]+100) and DisG[2] in range(DisO2[2][2]-100, DisO2[2][2]+100) and DisG[3] in range(DisO2[2][3]-100, DisO2[2][3]+100) :### si Cor es 2   o   el griper se encuentra cerca a las cordenadas 2
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 2
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[3][1]-100, DisO2[3][1]+100) and DisG[2] in range(DisO2[3][2]-100, DisO2[3][2]+100) and DisG[3] in range(DisO2[3][3]-100, DisO2[3][3]+100) :### si el griper se encuentra cerca a las cordenadas 3
-                    Cor=3
-
-
-            elif Cor==3 or DisG[1] in range(DisO2[3][1]-100, DisO2[3][1]+100) and DisG[2] in range(DisO2[3][2]-100, DisO2[3][2]+100) and DisG[3] in range(DisO2[3][3]-100, DisO2[3][3]+100) :### si Cor es 3   o   el griper se encuentra cerca a las cordenadas 3
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 3
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100):### si el griper se encuentra cerca a las cordenadas 4
-                    Cor=4
-
-            elif Cor==4 or DisG[1] in range(DisO2[4][1]-100, DisO2[4][1]+100) and DisG[2] in range(DisO2[4][2]-100, DisO2[4][2]+100) and DisG[3] in range(DisO2[4][3]-100, DisO2[4][3]+100):### si Cor es 4   o   el griper se encuentra cerca a las cordenadas 4
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 4
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100 ) : ### si el griper se encuentra cerca a las cordenadas origen
-                    contador =0
-
-
-
-     ###############################################################################################
+###############################################################################################
     # deteccion de enfermedad en jetson
             #if (mala):
             #   DisSave.append(DisG)
@@ -459,6 +405,7 @@ def Automatico ():
             except:
                 pass
 
+
 ###############################################################################################
 # Envio señales a Arduinos
 
@@ -486,7 +433,6 @@ def ACTUADORZ(paquete):
         ACTUADORZP.publish(hello_str)
         rate.sleep()
 
-
 ###############################################################################################
 # Datos recibidos de la camara
 def callback(data):
@@ -507,21 +453,21 @@ def UGripper():
     rate = rospy.Rate(1000)  # 100 Hz
     rate.sleep()
 
+
 ###############################################################################################
 # Main Program
 if __name__=='__main__':
-	# Read the arguments that were entered when the script was executed.
-	# If no argument: Linear 5 meters test.
+    # Read the arguments that were entered when the script was executed.
+    # # If no argument: Linear 5 meters test.
 	if len(sys.argv)==1:
 		mode=0
-		length = 1.1
-	
-	elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>4:
+		length = 1
+	# 
+	elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>2 or float(sys.argv[2])<0:
 		raise Exception("Usage error: wrong parameters!")
 	else:
 		mode = int(sys.argv[1])
-		# Length of robot 
-		length = 1.1 #float(sys.argv[2])
+		length = 1
 
 	#These Values can be adjusted:
 	Vx = 0.5 #Maximal Speed
@@ -560,12 +506,4 @@ if __name__=='__main__':
 	timeInit=time.time()
 
 	generatePath(mode, length, Ax, Vx)
-	rospy.loginfo("[PathGenerator]Test is finished")
-
-	rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
-	rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
-	t1 = threading.Thread(target=Automatico)
-	t1.start()
-	sys.exit(app.exec_())
-
-
+	rospy.loginfo("[PathGenerator]Linear mov is finished ")

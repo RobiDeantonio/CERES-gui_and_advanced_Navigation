@@ -332,7 +332,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		global myapp, procs
 		flag = True
 		for i in procs:
-			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader":
+			if i[0]=="PathGenerator" or i[0]=="bagLogger" or i[0]=="csvLogger" or i[0]=="poseController" or i[0]=="PathReader" or i[0]=="PathGenerator":
 				flag=False
 				break
 		if flag:
@@ -359,8 +359,10 @@ class CeresApplication(QtWidgets.QMainWindow):
 				#pass
 				#poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
 				#procs.append(["poseController", poseController])
-				DesiciMaking = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '1', str(myapp.ui.Diameter_SpinBox.value())]) 
-				procs.append(["DesiciMaking", DesiciMaking])
+				#pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking.py', myapp.path[0], '__name:=ceres_PathReader']) 
+				#procs.append(["PathReader", pathReader])
+				PathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '0', str(myapp.ui.Diameter_SpinBox.value())]) 
+				procs.append(["PathGenerator", PathGenerator])
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")
 			
@@ -386,6 +388,12 @@ class CeresApplication(QtWidgets.QMainWindow):
 					i[1].kill()
 					procs.pop(procs.index(i))
 					rospy.logwarn("[GUI] Test aborded.")
+					flag=True
+					break
+				if i[0]=="PathGenerator":
+					i[1].kill()
+					procs.pop(procs.index(i))
+					rospy.logwarn("[GUI] DesiciMaking Test aborded.")
 					flag=True
 					break
 				if i[0]=="csvLogger":
@@ -465,7 +473,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
-			if ports[i].description == "Arduino UNO R3":
+			if ports[i].description == "Arduino Mega":
 				n=i
 				break
 		#L=QStringList()
@@ -485,7 +493,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
-			if ports[i].description == "Arduino UNO R3":
+			if ports[i].description == "Arduino Mega":
 				n=i
 				break
 		#L=QStringList()
@@ -504,7 +512,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 		ports = list_ports.comports()
 		n=-1
 		for i in range(len(ports)):
-			if ports[i].description == "Arduino UNO R3":
+			if ports[i].description == "Arduino Mega":
 				n=i
 				break
 		#L=QStringList()
@@ -589,7 +597,7 @@ def refreshProcs():
 				myapp.ui.Act_Z_autodetect.setEnabled(True)
 				break
 				
-			elif  i[0] == "PathGenerator" or i[0]=="PathReader":
+			elif  i[0] == "PathGenerator" or i[0]=="PathReader" or i[0]=="PathGenerator":
 				procs.pop(procs.index(i))
 				flag=True
 				while(flag):
