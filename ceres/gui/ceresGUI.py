@@ -798,7 +798,7 @@ def refreshData():
 		myapp.ui.Map_Position_fullview.centerAt(var[14][3], var[15][3])
 
 		coords = var[14][3], var[15][3]
-		myapp.ui.graphicsView.addMarker("Position Time: "+str(var[0][3]), *coords, **dict(
+		myapp.ui.Map_Position_view.addMarker("Position Time: "+str(var[0][3]), *coords, **dict(
 			icon="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png",
 			draggable=False,
 			title="Position Time: "+str(var[0][3])
