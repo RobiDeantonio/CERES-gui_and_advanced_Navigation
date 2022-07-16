@@ -447,5 +447,4 @@ if __name__ == '__main__':
     rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
     t1 = threading.Thread(target=Automatico)
     t1.start()
-    sys.exit(app.exec_())
 

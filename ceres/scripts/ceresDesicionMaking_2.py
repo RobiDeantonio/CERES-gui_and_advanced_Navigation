@@ -23,8 +23,9 @@ import sys
 # Functions Definitions:
 # adquire: Initialize ROS Node and all topics subscribers/publishers.
 def adquire():
-	rospy.init_node('decisionMaking', anonymous=True)
-	rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
+    rospy.init_node('decisionMaking', anonymous=True)
+    rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
+    rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
 ###############################################################################################
 # callbackRC: receive RC Emergency Stop State to initiate/stop the sequence.
 def callbackRC(data):
@@ -177,6 +178,7 @@ global X
 global Y
 global Z
 global stop_threads
+global Ez
 
 Inicio=0
 guardar=0
@@ -189,13 +191,14 @@ X=0
 Y=0
 Z=0
 
+Ez = 0
+
 ###############################################################################################
 # publicacion Topicos ROS:
 ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
 ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
 ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
 from os import remove
-rospy.init_node("ACTUADORESPY",anonymous=True)
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -253,7 +256,7 @@ ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.a
 # Automatico: secuencia automatica para recorrido de actuadores en "U"
 
 def Automatico ():
-    global stop_threads, DisG, DisO, DisO2, DisSave,GPSSave,situacion
+    global stop_threads, DisG, DisO, DisO2, DisSave, GPSSave, situacion ,Ez
 
     DisO2 = [[479, 117, 1219], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
     DisSave = []  ##variable para guardar backup de coordenadas
@@ -282,16 +285,16 @@ def Automatico ():
     while True:
         #time.sleep(0.001)
         if stop_threads:
-            if contador<2000:
+            if Contador<2000:
                 DisO2 = [500, 117, 1000]
-            elif contador<4000:
+            elif Contador<4000:
                 DisO2 = [427, 304, 1883]
-            elif contador < 6000:
+            elif Contador < 6000:
                 DisO2 = [210, 302, 1873]
-            elif contador < 8000:
+            elif Contador < 8000:
                 DisO2 = [130, 118, 100]
-            elif contador == 10000:
-                contador=0
+            elif Contador == 10000:
+                Contador=0
 ###############################################################################################
     # deteccion de enfermedad en jetson
             #if (mala):
@@ -309,6 +312,8 @@ def Automatico ():
     ###############################################################################################
     # calculo actuadores xyz
 
+            
+
             O = DisO[1]-240
             G = DisG[1]-240
             OKA = XX.getDistance(O , 0.005)
@@ -318,7 +323,7 @@ def Automatico ():
             OKA=(OKAZ*math.cos(Angulo))-(DisO[2]*math.sin(Angulo))
             OKA=DisO2[1]
             GKA = (GKAZ * math.cos(Angulo)) - (DisG[2] * math.sin(Angulo))
-            print(OKA)
+            print('PRINT OKA',OKA)
             if(guardar!=1):
                 ControlZ.setXek(np.array([[GKA]]))
             #E = (-10 * 0.66913061 * ((OKA - GKA)))
@@ -410,40 +415,35 @@ def Automatico ():
 # Envio señales a Arduinos
 
 def ACTUADORX(paquete): #Se inicia el nodo ACTUADORESPY(Actuadores python)
-    rate = rospy.Rate(1000) #10 Hz
+    rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
-        rospy.loginfo(hello_str)
+        #rospy.loginfo(hello_str)
         ACTUADORXP.publish(hello_str)
         rate.sleep()
 
 def ACTUADORY(paquete):
-    rate = rospy.Rate(1000) #10 Hz
+    rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
-        rospy.loginfo(hello_str)
+        #rospy.loginfo(hello_str)
         ACTUADORYP.publish(hello_str)
         rate.sleep()
 
 def ACTUADORZ(paquete):
-    rate = rospy.Rate(1000) #10 Hz
+    rate = rospy.Rate(10) #10 Hz
     if not rospy.is_shutdown():
         hello_str = float(paquete)
-        rospy.loginfo(hello_str)
+        #rospy.loginfo(hello_str)
         ACTUADORZP.publish(hello_str)
         rate.sleep()
 
 ###############################################################################################
 # Datos recibidos de la camara
 def callback(data):
-    rospy.loginfo(data.data)
+    #rospy.loginfo(data.data)
     global DisG
     DisG=data.data
-
-def callback2(data):
-    rospy.loginfo(data.data)
-    global DisO
-    DisO=data.data
 
 def UObjeto():
     rate = rospy.Rate(1000)  # 100 Hz
@@ -456,54 +456,63 @@ def UGripper():
 
 ###############################################################################################
 # Main Program
-if __name__=='__main__':
-    # Read the arguments that were entered when the script was executed.
-    # # If no argument: Linear 5 meters test.
-	if len(sys.argv)==1:
-		mode=0
-		length = 1
-	# 
-	elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>2 or float(sys.argv[2])<0:
-		raise Exception("Usage error: wrong parameters!")
-	else:
-		mode = int(sys.argv[1])
-		length = 1
 
-	#These Values can be adjusted:
-	Vx = 0.5 #Maximal Speed
-	Ax = 0.25 #Maximal Acceleration	
+if __name__=='__main__':
+  # Read the arguments that were entered when the script was executed.
+  # # # If no argument: Linear 5 meters test.
+  if len(sys.argv)==1:
+    mode=0
+    length = 1
+	
+  elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>2 or float(sys.argv[2])<0:
+    raise Exception("Usage error: wrong parameters!")
+  else:
+    mode = int(sys.argv[1])
+    length = 1
+    
+    #These Values can be adjusted:
+    Vx = 0.5 #Maximal Speed
+    Ax = 0.25 #Maximal Acceleration	
 
 	#Do not adjust these maximum limits
 	# Over-sized values Security Checks
-	if(Ax>1):
-		Ax=1
-		rospy.logwarn("[PathGenerator]Linear Acceleration too high, setted to 1 [m.s-2]")
+  if(Ax>1):
+    Ax=1
+    rospy.logwarn("[PathGenerator]Linear Acceleration too high, setted to 1 [m.s-2]")
+    
+  if(Vx>1):
+    Vx=1
+    rospy.logwarn("[PathGenerator]Linear Speed too high, setted to 2 [m.s-1]")
+  
+  adquire()
+  pub=rospy.Publisher('/ceres/cmd_vel',Twist,queue_size=25)
+  AU=0
 
-	if(Vx>1):
-		Vx=1
-		rospy.logwarn("[PathGenerator]Linear Speed too high, setted to 2 [m.s-1]")
-
-	adquire()
-	pub=rospy.Publisher('/ceres/cmd_vel',Twist,queue_size=25)
-	AU=0
-
-	if(AU==0):
-		rospy.logwarn("[PathGenerator]Waitting Emergency Stop Activation...")
-		while AU==0:
-			pass
+  if(AU==0):
+    rospy.logwarn("[PathGenerator]Waitting Emergency Stop Activation...")
+    while AU==0:
+        pass
 			
-	rospy.logwarn("[PathGenerator]Waitting Emergency Stop Desactivation to initiate the test...")
-	if mode==0:
-		rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A "+str(length)+" METERS FORWARD MOVEMENT")
-	elif mode==1:
-		rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A CIRCULAR MOVEMENT WITH A DIAMETER OF "+str(length)+" METERS")
+  rospy.logwarn("[PathGenerator]Waitting Emergency Stop Desactivation to initiate the test...")
+  if mode==0:
+    rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A "+str(length)+" METERS FORWARD MOVEMENT")
+  elif mode==1:
+    rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A CIRCULAR MOVEMENT WITH A DIAMETER OF "+str(length)+" METERS")
 
 	
-	while AU==1:
-		pass
+  while AU==1:
+    pass
 
-	rospy.loginfo("[PathGenerator]Running test...")
-	timeInit=time.time()
+  rospy.loginfo("[PathGenerator]Running test...")
+  timeInit=time.time()
+  
+  generatePath(mode, length, Ax, Vx)
+  rospy.loginfo("[PathGenerator]Linear mov is finished ")
+  
+  stop_threads = True
+  t1 = threading.Thread(target=Automatico)
+  t1.start()
+  #stop_threads = False
+  rospy.loginfo("[PathGenerator] ALL is finished ")
 
-	generatePath(mode, length, Ax, Vx)
-	rospy.loginfo("[PathGenerator]Linear mov is finished ")
+
