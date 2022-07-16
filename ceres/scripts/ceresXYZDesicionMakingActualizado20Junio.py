@@ -1,39 +1,78 @@
-#!/usr/bin/env python
-# license
+#!/home/gidam/catkin_ws/src/CERES-ServoVisual_control/tests/ActuadoresVision-env/bin/python3
 
+#Vision CamaraPrimesense
+# license
 ##############################################################################################
-#  Script:        ceresPathGenerator
-#  Version:       4.0
-#  Authors:       Adrien Legrand
+#  Script:        ceresXYZDesicionMaking
+#  Version:       1.0
+#  Authors:       Robinsson Deantonio
 #  Organization:  Universidad Nacional de Colombia, Universidad Militar Nueva Grenada
-#  Proyecto:      Trabajo de Grado
-#  Goal:          Generate Speed Command to Control the CERES Agrobot and publish them to /ceres/cmd_vel topic
-#  Date:          06-09-2018
+#  Proyecto:      Investigador
+#  Goal:          Read a CERES Path from a .path file and publish ROS Pose messages.
+#  Date:          06-06-2022
 ###############################################################################################
 # Importations:
-import rospy
-import datetime
-import time
-from geometry_msgs.msg import Twist
-from ceres.msg import CeresRC
-from math import sqrt,cos,sin
-import sys
-
-#ROS y Actuadores librerias
-import threadingJohann as threading
 import numpy as np
 import math
+
+###############################################################################################
+# Functions Definitions:
+# SensorKalman: creacion de filtro para controlar actuadores X Y Z.
+class SensorKalman:
+    def __init__(self):
+        self.Q_distance=1
+        self.R_measure=1
+        self.distance=0
+        self.P=0
+    def getDistance(self,newDistance,dt):
+        self.P+=self.Q_distance*dt
+        S=self.P+self.R_measure
+        K=self.P/S
+        y=newDistance-self.distance
+        self.distance+=K*y
+        self.P*=(1-K)
+        return self.distance
+    def setDistance(self,newDistance):
+        self.distance=newDistance
+    def getQdistance(self):
+        return self.Q_distance
+    def setQdistance(self,newQ_distance):
+        self.Q_distance=newQ_distance
+    def getRmeasure(self):
+        return self.R_measure
+    def setRmeasure(self,newR_measure):
+        self.R_measure=newR_measure
+
+XX=SensorKalman()
+YY=SensorKalman()#SensorZ
+XXX=SensorKalman()#SensorY
+YYY=SensorKalman()
+XXXX=SensorKalman()#SensorX
+YYYY=SensorKalman()
+###############################################################################################
+# Importations:
+#ROS y Actuadores librerias
+import threadingJohann as threading
+from threadingJohann import Timer,Thread,Event
+from xlrd import open_workbook
+from xlutils.copy import copy
+import xlrd
+import xlwt
 import os
 import sys
 import time
+from PyQt5 import uic
+from PyQt5.QtWidgets import QMainWindow, QApplication
+import rospy
 from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
-
 
 ###############################################################################################
 # Variables Globales:
 global Inicio
+
 global guardar
+
 global Contador
 
 global DisG
@@ -53,7 +92,46 @@ DisO=[0,0,0]
 X=0
 Y=0
 Z=0
+###############################################################################################
+# publicacion Topicos ROS:
+ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
+ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
+ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
+from os import remove
+rospy.init_node("ACTUADORESPY",anonymous=True)
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
+
+###############################################################################################
+# Parte del codigo comentariado de la interfaz grafica
+# Boton salir activa la variable stop_threads para iniciar el proceso:
+
+
+
+#class ActuadorGUI(QMainWindow):
+#    def __init__(self):
+#        super().__init__()
+#        ActuadoresGUI = resource_path("ActuadoresGUI.ui")
+#        uic.loadUi(ActuadoresGUI, self)
+#      self.Salir.clicked.connect(self.Salido)
+
+
+ #   def Salido (self):
+ #       global stop_threads
+ #       stop_threads=True
+
+
+
+
+
+###############################################################################################
 # Controlador: Funcion para establecer las velocidades de los actuadores
 
 class Controlador:
@@ -95,151 +173,6 @@ ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.a
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
 ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-
-###############################################################################################
-# publicacion Topicos ROS:
-ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
-ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
-ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
-from os import remove
-rospy.init_node("ACTUADORESPY",anonymous=True)
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-###############################################################################################
-# Functions Definitions:
-# adquire: Initialize ROS Node and all topics subscribers/publishers.
-def adquire():
-	rospy.init_node('PathPlanner', anonymous=True)
-	rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
-###############################################################################################
-# callbackRC: receive RC Emergency Stop State to initiate/stop the sequence.
-def callbackRC(data):
-	global AU
-	if data.emergency<50:
-		if AU==True:
-			rospy.logwarn("[PathGenerator]Emergency Stop Desactivated !")
-		AU=False
-	else:
-		if AU==False:
-			rospy.logwarn("[PathGenerator]Emergency Stop Activated !")
-		AU=True
-###############################################################################################
-# generatePath: generate a path according to the selection
-def generatePath(mode, length, Ax, Vx):
-	global timeInit,pub
-
-	rate=rospy.Rate(40)	# Frequency of the Reference Publication
-	flag=True
-	
-	if mode==0 or mode ==4:
-		# Linear Path: Calculate Lenght
-		Dx = length
-	elif mode==1:
-		# Circular Path: Calculate Lenght (Perimeter)
-		Dx = length*3.14
-	else:
-		Dx = 0
-	
-	Ta = Vx / Ax # Acceleration Time
-	Tx = Dx / Vx + Ta # Total Time
-	
-	while (not rospy.is_shutdown() and flag and not AU):
-		# Initialize Message
-		msg=Twist()
-
-		# Generate a trapezoidal speed (Acceleration Phase, Constant Speed Phase, Decceleration Phase).
-		
-		if 2.0*Ta > Tx: # Case Maximal Velocity can't be reached (No Constant Speed Phase)
-			Tx = 2*sqrt(Dx / Ax)
-			# Update Path Total Time
-			if time.time()-timeInit > Tx:
-				# If the path is finished, stop the motors.
-				flag = False
-				msg.linear.x = 0.0
-			
-			elif time.time()-timeInit < Tx/2:
-				# If Acceleration Phase, integrate the acceleration and publish the calculated speed.
-				msg.linear.x = Ax * (time.time()-timeInit)
-					
-			else:
-				# If Desacceleration Phase, integrate the acceleration and publish the calculated speed.
-				msg.linear.x = Ax * (Tx/2) - Ax * (time.time() - timeInit - Tx/2)
-					
-					
-		else: # Case Maximal Velocity is reached
-			if time.time() - timeInit > Tx:
-				# If the path is finished, stop the motors.
-				flag = False
-				msg.linear.x = 0.0
-				
-			elif time.time() - timeInit < Ta:
-				# If Acceleration Phase, integrate the acceleration and publish the calculated speed.
-					msg.linear.x=Ax*(time.time()-timeInit)
-					
-			elif time.time() - timeInit >= Ta and time.time() - timeInit < Tx - Ta:
-				# If Constant Speed Phase, publish the Maximum speed.
-				msg.linear.x = Ax * Ta
-					
-			else:
-				# If Desacceleration Phase, integrate the acceleration and publish the calculated speed.
-				msg.linear.x = Ax * Ta - Ax * (time.time() - timeInit - (Tx - Ta))
-
-		if mode==1:
-			# If Circular Path, calculate angular speed to respect the specified radius.
-			msg.angular.z = 2.0*msg.linear.x / length
-		else:
-			# If Linear Path, angular speed is null.
-			msg.angular.z = 0.0				
-
-		# Publish the ROS message in the /ceres/cmd_vel topic.
-		if not rospy.is_shutdown():
-			pub.publish(msg)
-
-		rate.sleep()
-
-
-###############################################################################################
-# Functions Definitions:
-# SensorKalman: creacion de filtro para controlar actuadores X Y Z.
-class SensorKalman:
-    def __init__(self):
-        self.Q_distance=1
-        self.R_measure=1
-        self.distance=0
-        self.P=0
-    def getDistance(self,newDistance,dt):
-        self.P+=self.Q_distance*dt
-        S=self.P+self.R_measure
-        K=self.P/S
-        y=newDistance-self.distance
-        self.distance+=K*y
-        self.P*=(1-K)
-        return self.distance
-    def setDistance(self,newDistance):
-        self.distance=newDistance
-    def getQdistance(self):
-        return self.Q_distance
-    def setQdistance(self,newQ_distance):
-        self.Q_distance=newQ_distance
-    def getRmeasure(self):
-        return self.R_measure
-    def setRmeasure(self,newR_measure):
-        self.R_measure=newR_measure
-
-XX=SensorKalman()
-YY=SensorKalman()#SensorZ
-XXX=SensorKalman()#SensorY
-YYY=SensorKalman()
-XXXX=SensorKalman()#SensorX
-YYYY=SensorKalman()
 
 
 ###############################################################################################
@@ -459,6 +392,7 @@ def Automatico ():
             except:
                 pass
 
+
 ###############################################################################################
 # Envio señales a Arduinos
 
@@ -486,7 +420,6 @@ def ACTUADORZ(paquete):
         ACTUADORZP.publish(hello_str)
         rate.sleep()
 
-
 ###############################################################################################
 # Datos recibidos de la camara
 def callback(data):
@@ -507,65 +440,12 @@ def UGripper():
     rate = rospy.Rate(1000)  # 100 Hz
     rate.sleep()
 
-###############################################################################################
-# Main Program
-if __name__=='__main__':
-	# Read the arguments that were entered when the script was executed.
-	# If no argument: Linear 5 meters test.
-	if len(sys.argv)==1:
-		mode=0
-		length = 1.1
-	
-	elif (len(sys.argv) != 3) or (not (str(sys.argv[1]).isnumeric())) or int(sys.argv[1])<0  or int(sys.argv[1])>4:
-		raise Exception("Usage error: wrong parameters!")
-	else:
-		mode = int(sys.argv[1])
-		# Length of robot 
-		length = 1.1 #float(sys.argv[2])
 
-	#These Values can be adjusted:
-	Vx = 0.5 #Maximal Speed
-	Ax = 0.25 #Maximal Acceleration	
+if __name__ == '__main__':
 
-	#Do not adjust these maximum limits
-	# Over-sized values Security Checks
-	if(Ax>1):
-		Ax=1
-		rospy.logwarn("[PathGenerator]Linear Acceleration too high, setted to 1 [m.s-2]")
-
-	if(Vx>1):
-		Vx=1
-		rospy.logwarn("[PathGenerator]Linear Speed too high, setted to 2 [m.s-1]")
-
-	adquire()
-	pub=rospy.Publisher('/ceres/cmd_vel',Twist,queue_size=25)
-	AU=0
-
-	if(AU==0):
-		rospy.logwarn("[PathGenerator]Waitting Emergency Stop Activation...")
-		while AU==0:
-			pass
-			
-	rospy.logwarn("[PathGenerator]Waitting Emergency Stop Desactivation to initiate the test...")
-	if mode==0:
-		rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A "+str(length)+" METERS FORWARD MOVEMENT")
-	elif mode==1:
-		rospy.logwarn("[PathGenerator]THE ROBOT WILL PERFORM A CIRCULAR MOVEMENT WITH A DIAMETER OF "+str(length)+" METERS")
-
-	
-	while AU==1:
-		pass
-
-	rospy.loginfo("[PathGenerator]Running test...")
-	timeInit=time.time()
-
-	generatePath(mode, length, Ax, Vx)
-	rospy.loginfo("[PathGenerator]Test is finished")
-
-	rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
-	rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
-	t1 = threading.Thread(target=Automatico)
-	t1.start()
-	sys.exit(app.exec_())
-
+    rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
+    rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
+    t1 = threading.Thread(target=Automatico)
+    t1.start()
+    sys.exit(app.exec_())
 
