@@ -286,15 +286,34 @@ def Automatico ():
         #time.sleep(0.001)
         if stop_threads:
             if Contador<2000:
-                DisO2 = [500, 117, 1000]
-            elif Contador<4000:
-                DisO2 = [427, 304, 1883]
-            elif Contador < 6000:
                 DisO2 = [210, 302, 1873]
-            elif Contador < 8000:
-                DisO2 = [130, 118, 100]
-            elif Contador == 10000:
-                Contador=0
+            #elif Contador<4000:
+            #    DisO2 = [427, 304, 1883]
+            #elif Contador < 6000:
+            #    DisO2 = [210, 302, 1873]
+            #elif Contador < 8000:
+            #    DisO2 = [130, 118, 1000]
+            #elif Contador < 10000:
+            #    x=0
+            #    y=0
+            #    z=0
+            elif Contador == 2000:
+                stop_threads = False
+                Contador=1
+
+        #if stop_threads:
+            #        (y,z,x)
+            #if Contador<2000:
+            #    DisO2 = [75, -650, 1600]
+            #elif Contador<4000:
+            #    DisO2 = [427, 304, 1883]
+            #elif Contador < 6000:
+            #    DisO2 = [210, 302, 1873]
+            #elif Contador < 8000:
+            #    DisO2 = [130, 118, 100]
+            #elif Contador == 2000:
+            #    stop_threads = False
+            #    Contador=0
 ###############################################################################################
     # deteccion de enfermedad en jetson
             #if (mala):
@@ -321,9 +340,10 @@ def Automatico ():
             OKAZ=((OKA*DisO[2]/520))
             GKAZ=((GKA*DisG[2]/520))
             OKA=(OKAZ*math.cos(Angulo))-(DisO[2]*math.sin(Angulo))
+            print('PRINT GKAZ',OKA)
             OKA=DisO2[1]
             GKA = (GKAZ * math.cos(Angulo)) - (DisG[2] * math.sin(Angulo))
-            print('PRINT OKA',OKA)
+            #print('PRINT OKA',OKA)
             if(guardar!=1):
                 ControlZ.setXek(np.array([[GKA]]))
             #E = (-10 * 0.66913061 * ((OKA - GKA)))
@@ -356,8 +376,9 @@ def Automatico ():
             GKA = YYY.getDistance(G, 0.005)
             OKA=DisO2[0]
 
-            #OKAZ = ((OKA * DisO[0] / 520)) -----------------
-            #GKAZ = ((GKA * DisG[0] / 520))
+            OKAY = ((OKA * DisO[0] / 520)) 
+            GKAY = ((GKA * DisG[0] / 520))
+            print('PRINT GKAY',GKAY)
 
             #sheet.write(Contador, 3, OKA)
             #E=(-4 * (OKA - GKA))
@@ -384,8 +405,7 @@ def Automatico ():
             OKA=OKA*math.cos(Angulo)+OKAZ*math.sin(Angulo)
             OKA=DisO2[2]
             GKA=GKA*math.cos(Angulo)+GKAZ*math.sin(Angulo)
-            print(OKA)
-            print(GKA)
+            print('PRINT GKAX',GKA)
             #sheet.write(Contador, 6, OKA)
             #E=(-10 * 0.74314482*(OKA - GKA))#1
             TtControl = time.time()
@@ -502,17 +522,17 @@ if __name__=='__main__':
 	
   while AU==1:
     pass
-
   rospy.loginfo("[PathGenerator]Running test...")
   timeInit=time.time()
   
   generatePath(mode, length, Ax, Vx)
   rospy.loginfo("[PathGenerator]Linear mov is finished ")
+  stop_threads = True 
+  t1 = threading.Thread(Automatico())
   
-  stop_threads = True
-  t1 = threading.Thread(target=Automatico)
   t1.start()
   #stop_threads = False
   rospy.loginfo("[PathGenerator] ALL is finished ")
+
 
 
