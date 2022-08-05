@@ -292,40 +292,40 @@ class CeresApplication(QtWidgets.QMainWindow):
 	def AVANZARXX(self):
 		global X
 		X=X+1000
-		#ACTUADORX(X)
+		ACTUADORX(X)
 	def AVANZARYY(self):
 		global Y
 		Y = Y + 1000
-		#ACTUADORY(Y)
+		ACTUADORY(Y)
 	def AVANZARZZ(self):
 		global Z
 		Z = Z + 1000
-		#ACTUADORZ(Z)
+		ACTUADORZ(Z)
 	def STOPX(self):
 		global X
 		X = 0
-		#ACTUADORX(X)
+		ACTUADORX(X)
 	def STOPY(self):
 		global Y
 		Y = 0
-		#ACTUADORY(Y)
+		ACTUADORY(Y)
 	def STOPZ(self):
 		global Z
 		Z = 0
-		#ACTUADORZ(Z)
+		ACTUADORZ(Z)
 
 	def RETROCEDERXX(self):
 		global X
 		X = X - 1000
-		#ACTUADORX(X)
+		ACTUADORX(X)
 	def RETROCEDERYY(self):
 		global Y
 		Y = Y - 1000
-		#ACTUADORY(Y)
+		ACTUADORY(Y)
 	def RETROCEDERZZ(self):
 		global Z
 		Z = Z - 1000
-		#ACTUADORZ(Z)
+		ACTUADORZ(Z)
 
 
 	def startPathGenerator(self):
@@ -356,7 +356,6 @@ class CeresApplication(QtWidgets.QMainWindow):
 				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
 			elif myapp.ui.verticalSlider.value()==4:
-
 				
 				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '1', str(myapp.ui.Diameter_SpinBox.value())]) 
 				procs.append(["PathGenerator", pathGenerator])			
@@ -366,8 +365,17 @@ class CeresApplication(QtWidgets.QMainWindow):
 			rospy.logerr("[GUI] A test sequence is already started!")
 			
 	def stopPathGenerator(self):
-		global myapp, procs
+		global myapp, procs, X, Y, Z,stop_threads
 		flag=True
+		stop_threads=False
+		global Z,X,Y
+		Z = 0
+		Y = 0
+		X = 0
+
+		ACTUADORZ(Z)
+		ACTUADORX(X)
+		ACTUADORY(Y)
 		
 		while(flag):
 			flag=False
@@ -949,35 +957,35 @@ def calculateCirclePoints(diameter):
 		Y.append(diameter/2.0*sin(i*2.0*3.14/1000.0))
 	return [X,Y]
 
-#def ACTUADORX(paquete):
-#    pub = rospy.Publisher("ACTUADORX", Float32, queue_size=10)
-#    rospy.init_node("Ceres_GUI",anonymous=True)
-#    rate = rospy.Rate(10) #10 Hz
-#    if not rospy.is_shutdown():
-#        hello_str = float(paquete)
-#        rospy.loginfo(hello_str)
-#        pub.publish(hello_str)
-#        rate.sleep()
+def ACTUADORX(paquete):
+    pub = rospy.Publisher("ACTUADORX", Float32, queue_size=10)
+    rospy.init_node("Ceres_GUI",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
 
-#def ACTUADORY(paquete):
-#    pub = rospy.Publisher("ACTUADORY", Float32, queue_size=10)
-#    rospy.init_node("Ceres_GUI",anonymous=True)
-#    rate = rospy.Rate(10) #10 Hz
-#    if not rospy.is_shutdown():
-#        hello_str = float(paquete)
-#        rospy.loginfo(hello_str)
-#        pub.publish(hello_str)
-#        rate.sleep()
+def ACTUADORY(paquete):
+    pub = rospy.Publisher("ACTUADORY", Float32, queue_size=10)
+    rospy.init_node("Ceres_GUI",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
 
-#def ACTUADORZ(paquete):
-#    pub = rospy.Publisher("ACTUADORZ", Float32, queue_size=10)
-#    rospy.init_node("Ceres_GUI",anonymous=True)
-#    rate = rospy.Rate(10) #10 Hz
-#    if not rospy.is_shutdown():
-#        hello_str = float(paquete)
-#        rospy.loginfo(hello_str)
-#        pub.publish(hello_str)
-#        rate.sleep()
+def ACTUADORZ(paquete):
+    pub = rospy.Publisher("ACTUADORZ", Float32, queue_size=10)
+    rospy.init_node("Ceres_GUI",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
 		
 		
 if __name__ == "__main__":

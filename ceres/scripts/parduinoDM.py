@@ -1,23 +1,13 @@
 #!/home/gidam/catkin_ws/src/CERES-ServoVisual_control/tests/ActuadoresVision-env/bin/python3
 
 #Vision CamaraPrimesense
-# license
-##############################################################################################
-#  Script:        ceresXYZDesicionMaking
-#  Version:       1.0
-#  Authors:       Robinsson Deantonio
-#  Organization:  Universidad Nacional de Colombia, Universidad Militar Nueva Grenada
-#  Proyecto:      Investigador
-#  Goal:          Read a CERES Path from a .path file and publish ROS Pose messages.
-#  Date:          06-06-2022
-###############################################################################################
-# Importations:
 import numpy as np
+#import cv2
+#from primesense import openni2#, nite2
+#from primesense import _openni2 as c_api
 import math
 
-###############################################################################################
-# Functions Definitions:
-# SensorKalman: creacion de filtro para controlar actuadores X Y Z.
+
 class SensorKalman:
     def __init__(self):
         self.Q_distance=1
@@ -49,15 +39,16 @@ XXX=SensorKalman()#SensorY
 YYY=SensorKalman()
 XXXX=SensorKalman()#SensorX
 YYYY=SensorKalman()
-###############################################################################################
-# Importations:
+
+global Inicio
+Inicio=0
+global guardar
+guardar=0
+global Contador
+Contador = 1
 #ROS y Actuadores librerias
 import threadingJohann as threading
 from threadingJohann import Timer,Thread,Event
-from xlrd import open_workbook
-from xlutils.copy import copy
-import xlrd
-import xlwt
 import os
 import sys
 import time
@@ -66,38 +57,23 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 import rospy
 from std_msgs.msg import Float32
 from std_msgs.msg import Float32MultiArray
-
-###############################################################################################
-# Variables Globales:
-global Inicio
-
-global guardar
-
-global Contador
-
 global DisG
 global DisO
 global X
 global Y
 global Z
 global stop_threads
-
-Inicio=0
-guardar=0
-Contador = 1
-stop_threads = False  ## variable para empezar el modo automatico
+ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
+ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
+ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
+from os import remove
+stop_threads = False
 Dis=0
 DisG=[0,0,0]
 DisO=[0,0,0]
 X=0
 Y=0
 Z=0
-###############################################################################################
-# publicacion Topicos ROS:
-ACTUADORXP = rospy.Publisher("ACTUADORX", Float32, queue_size=1)
-ACTUADORYP = rospy.Publisher("ACTUADORY", Float32, queue_size=1)
-ACTUADORZP = rospy.Publisher("ACTUADORZ", Float32, queue_size=1)
-from os import remove
 rospy.init_node("ACTUADORESPY",anonymous=True)
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -109,30 +85,123 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-###############################################################################################
-# Parte del codigo comentariado de la interfaz grafica
-# Boton salir activa la variable stop_threads para iniciar el proceso:
+class ActuadorGUI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        ActuadoresGUI = resource_path("/home/gidam/catkin_ws/src/CERES-gui_and_advanced_Navigation/ceres/scripts/ActuadoresGUI.ui")
+        uic.loadUi(ActuadoresGUI, self)
+        self.Salir.clicked.connect(self.Salido)
+        self.RETROCEDERX.clicked.connect(self.RETROCEDERXX)
+        self.RETROCEDERY.clicked.connect(self.RETROCEDERYY)
+        self.RETROCEDERZ.clicked.connect(self.RETROCEDERZZ)
+        self.AVANZARX.clicked.connect(self.AVANZARXX)
+        self.AVANZARY.clicked.connect(self.AVANZARYY)
+        self.AVANZARZ.clicked.connect(self.AVANZARZZ)
+        self.PARADAX.clicked.connect(self.STOPX)
+        self.PARADAY.clicked.connect(self.STOPY)
+        self.PARADAZ.clicked.connect(self.STOPZ)
+
+    def Salido (self):
+        global stop_threads
+        # global Tinicio
+        # Tinicio = time.time()
+        stop_threads=True
+        # global DisG
+        # global DisO
+        # UGripper()
+        # UObjeto()
+        # O=DisO[1]
+        # G=DisG[1]
+        # print(O-G)
+        # ACTUADORZ(O-G)
+
+    def AVANZARXX(self):
+        global X
+        X=X+1000
+        ACTUADORX(X)
+    def AVANZARYY(self):
+        global Y
+        Y = Y + 1000
+        ACTUADORY(Y)
+    def AVANZARZZ(self):
+        global Z
+        Z = Z + 1000
+        ACTUADORZ(Z)
+    def STOPX(self):
+        global stop_threads
+        stop_threads = False
+        global X
+        X = 0
+        ACTUADORX(X)
+
+    def STOPY(self):
+        global stop_threads
+        stop_threads = False
+        global Y
+        Y = 0
+        ACTUADORY(Y)
+
+    def STOPZ(self):
+        global stop_threads
+        stop_threads = False
+        global Z
+        Z = 0
+        ACTUADORZ(Z)
 
 
+    def RETROCEDERXX(self):
+        global X
+        X = X - 1000
+        ACTUADORX(X)
+    def RETROCEDERYY(self):
+        global Y
+        Y = Y - 1000
+        ACTUADORY(Y)
+    def RETROCEDERZZ(self):
+        global Z
+        Z = Z - 1000
+        ACTUADORZ(Z)
 
-#class ActuadorGUI(QMainWindow):
-#    def __init__(self):
-#        super().__init__()
-#        ActuadoresGUI = resource_path("ActuadoresGUI.ui")
-#        uic.loadUi(ActuadoresGUI, self)
-#      self.Salir.clicked.connect(self.Salido)
+#para usar muestras se usa
+class perpetualTimer():
 
+   def __init__(self,t,hFunction):
+      self.t=t
+      self.hFunction = hFunction
+      self.thread = Timer(self.t,self.handle_function)
 
- #   def Salido (self):
- #       global stop_threads
- #       stop_threads=True
+   def handle_function(self):
+      self.hFunction()
+      self.thread = Timer(self.t,self.handle_function)
+      self.thread.start()
 
+   def start(self):
+      self.thread.start()
 
+   def cancel(self):
+      self.thread.cancel()
 
-
-
-###############################################################################################
-# Controlador: Funcion para establecer las velocidades de los actuadores
+class RepeatedTimer(object):
+    def __init__(self, interval, function, *args, **kwargs):
+        self._timer = None
+        self.interval = interval
+        self.function = function
+        self.args = args
+        self.kwargs = kwargs
+        self.is_running = False
+        self.start()
+    def _run(self):
+        self.is_running = False
+        self.start()
+        self.function(*self.args, **self.kwargs)
+    def start(self):
+        if not self.is_running:
+            self._timer = Timer(self.interval, self._run)
+            self._timer.start()
+            self.is_running = True
+    def stop(self):
+        self._timer.cancel()
+        self.is_running = False
 
 class Controlador:
     def __init__(self, G, H,K,Ke,Xek,Yk):
@@ -166,144 +235,82 @@ class Controlador:
         self.Xek1=xestimado
         self.Xek=xestimado
 
-
-ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+#ControlZ=Controlador(np.array([[1,0.0188],[0,0.8823]]),np.array([[-0.0099],[-0.9687]]),
+#                     np.array([[-284.051,14.2561]]),np.array([[1.8823],[41.412]]),np.array([[0],[0]]),0)
+ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-9]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-9]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-9]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-
-
-###############################################################################################
-# Automatico: secuencia automatica para recorrido de actuadores en "U"
-
+#Controlador
 def Automatico ():
     global stop_threads, DisG, DisO, DisO2, DisSave,GPSSave,situacion
 
-    DisO2 = [[1500, 180, 300], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
-    DisSave = []  ##variable para guardar backup de coordenadas
-    estado = []   ## variable para guardar estado de la planta por mdeio de la jetson
-    ##situacion= jetson   ## señal de deteccion de la jetson
+    DisO2 = [[479, 117, 1219], [1500, 180, 300], [1500, 180, 300], [1500, 180, 300]]
+    DisSave = []
+    estado = []
+    ##situacion= jetson
 
-    ###############################################################################################
-    # Exportacion posiciones a excel
 
     #Workbook = xlrd.open_workbook("Resultados.xls")
     #wb = copy(Workbook)
     #sheet = wb.get_sheet(0)
-    ###############################################################################################
-    # inicializacion variables
-
-    Contador=1
+    contador=1
     guardar=0
     Tinicio=time.time()
     TiControl=Tinicio
     TiControlY = Tinicio
     TiControlX = Tinicio
-    Angulo=math.radians(35)##42 # Angulo de posicionamiento de la camara primesense en el ceres
+    Angulo=math.radians(35)##42 en la maquina
 
-    ###############################################################################################
-    # ciclo de deteccion en U
+
     while True:
         #time.sleep(0.001)
         if stop_threads:
-            '''if contador<2000:
-                DisO2 = [1500, 180, 300]
+            if contador<2000:
+                DisO2 = [500, 117, 1000]
             elif contador<4000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [427, 304, 1883]
             elif contador < 6000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [210, 302, 1873]
             elif contador < 8000:
-                DisO2 = [1500, 180, 300]
+                DisO2 = [130, 118, 1000]
+            elif contador < 10000:
+                x=0
+                y=0
+                z=0
             elif contador == 10000:
                 contador=0
-                '''
-            if contador < 4000: ### dirigir el manipulador al punto de origen en 4000 puntos
-                DisO2 = [1500, 180, 300]
-                Cor=0
 
-            elif Cor==1 or DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100 ) : ### si Cor es 1   o   el griper se encuentra cerca a las cordenadas origen
-
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 1
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[2][1]-100, DisO2[2][1]+100) and DisG[2] in range(DisO2[2][2]-100, DisO2[2][2]+100) and DisG[3] in range(DisO2[2][3]-100, DisO2[2][3]+100) :### si el griper se encuentra cerca a las cordenadas 2
-                    Cor=2
-
-            elif Cor==2 or DisG[1] in range(DisO2[2][1]-100, DisO2[2][1]+100) and DisG[2] in range(DisO2[2][2]-100, DisO2[2][2]+100) and DisG[3] in range(DisO2[2][3]-100, DisO2[2][3]+100) :### si Cor es 2   o   el griper se encuentra cerca a las cordenadas 2
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 2
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[3][1]-100, DisO2[3][1]+100) and DisG[2] in range(DisO2[3][2]-100, DisO2[3][2]+100) and DisG[3] in range(DisO2[3][3]-100, DisO2[3][3]+100) :### si el griper se encuentra cerca a las cordenadas 3
-                    Cor=3
-
-
-            elif Cor==3 or DisG[1] in range(DisO2[3][1]-100, DisO2[3][1]+100) and DisG[2] in range(DisO2[3][2]-100, DisO2[3][2]+100) and DisG[3] in range(DisO2[3][3]-100, DisO2[3][3]+100) :### si Cor es 3   o   el griper se encuentra cerca a las cordenadas 3
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 3
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100):### si el griper se encuentra cerca a las cordenadas 4
-                    Cor=4
-
-            elif Cor==4 or DisG[1] in range(DisO2[4][1]-100, DisO2[4][1]+100) and DisG[2] in range(DisO2[4][2]-100, DisO2[4][2]+100) and DisG[3] in range(DisO2[4][3]-100, DisO2[4][3]+100):### si Cor es 4   o   el griper se encuentra cerca a las cordenadas 4
-                global X, Y, Z
-                X = 0
-                y = 0
-                z = 0
-                Cor = 4
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-
-                if DisG[1] in range(DisO2[1][1]-100, DisO2[1][1]+100) and DisG[2] in range(DisO2[1][2]-100, DisO2[1][2]+100) and DisG[3] in range(DisO2[1][3]-100, DisO2[1][3]+100 ) : ### si el griper se encuentra cerca a las cordenadas origen
-                    contador =0
-
-
-
-     ###############################################################################################
-    # deteccion de enfermedad en jetson
             #if (mala):
-            #   DisSave.append(DisG)
+            #    DisSave.append(DisG)
             #    GPSSave.append(GPSActual)
             #    estado.append(situacion)
 
-            #    if situacion == "a":
-            #        print("matar maleza")
-            #    elif situacion == "b":
-            #        print("regar planta")
-            #    elif situacion == "c":
-            #        print("fumigar planta")
+#                if situacion == "a":
+ #                   print("matar maleza")
+  #              elif situacion == "b":
+   #                 print("regar planta")
+    #            elif situacion == "c":
+     #               print("fumigar planta")
 
-    ###############################################################################################
-    # calculo actuadores xyz
 
-            O = DisO[1]-240
+            # t = threading.Thread(target=listener)
+            # t.start()
+            #UGripper()
+            #UObjeto()
+            #print(DisO)
+            #print(DisG)
+
+            O = DisO2[1]-240
             G = DisG[1]-240
             OKA = XX.getDistance(O , 0.005)
             GKA = YY.getDistance(G , 0.005)
             OKAZ=((OKA*DisO[2]/520))
             GKAZ=((GKA*DisG[2]/520))
             OKA=(OKAZ*math.cos(Angulo))-(DisO[2]*math.sin(Angulo))
-            OKA=DisO2[1]
+            #OKA=DisO2[1]
             GKA = (GKAZ * math.cos(Angulo)) - (DisG[2] * math.sin(Angulo))
             print(OKA)
             if(guardar!=1):
@@ -327,16 +334,16 @@ def Automatico ():
             #print(E)
             #sheet.write(Contador, 2, GKA)
             #sheet.write(Contador, 9, (time.time()-Tinicio))
-            Contador=Contador+1
+            contador=contador+1
             #print((O - G))
 
 
-            O = DisO[0]-320
+            O = DisO2[0]-320
             G = DisG[0]-320
             #print(-(O - G))
             OKA = XXX.getDistance(O, 0.005)
             GKA = YYY.getDistance(G, 0.005)
-            OKA=DisO2[0]
+            #OKA=DisO2[0]
 
             #OKAZ = ((OKA * DisO[0] / 520)) -----------------
             #GKAZ = ((GKA * DisG[0] / 520))
@@ -358,13 +365,13 @@ def Automatico ():
             #sheet.write(Contador, 5, GKA)
 
 
-            O = DisO[2]
+            O = DisO2[2]
             G = DisG[2]
             #print(-(O - G))
             OKA = XXXX.getDistance(O, 0.005)
             GKA = YYYY.getDistance(G, 0.005)
             OKA=OKA*math.cos(Angulo)+OKAZ*math.sin(Angulo)
-            OKA=DisO2[2]
+            #OKA=DisO2[2]
             GKA=GKA*math.cos(Angulo)+GKAZ*math.sin(Angulo)
             print(OKA)
             print(GKA)
@@ -392,10 +399,52 @@ def Automatico ():
             except:
                 pass
 
+# def Automatico ():
+#     global stop_threads, DisG, DisO,guardar,Contador
+#     Workbook = xlrd.open_workbook("Resultados.xls")
+#     wb = copy(Workbook)
+#     sheet = wb.get_sheet(0)
+#     #time.sleep(0.001)
+#     if stop_threads:
+#         guardar=1
+#         # t = threading.Thread(target=listener)
+#         # t.start()
+#         UGripper()
+#         UObjeto()
+#         print(DisO)
+#         print(DisG)
+#         O = DisO[1]
+#         G = DisG[1]
+#         E=-17*(O - G)
+#         sheet.write(Contador, 0, O)
+#         sheet.write(Contador, 1, E)
+#         sheet.write(Contador, 2, G)
+#         sheet.write(Contador, 3, (time.time()-Tinicio))
+#         Contador=Contador+1
+#         print((O - G))
+#         ACTUADORZ(-17*(O - G)) #-17
+#         O = DisO[0]
+#         G = DisG[0]
+#         print(-(O - G))
+#         ACTUADORY(-4 * (O - G))#-4
+#         O = DisO[2]
+#         G = DisG[2]
+#         print(-(O - G))
+#         ACTUADORX(-1 * (O - G))
+#         try:
+#             remove('/home/johann/catkin_ws/src/tests/ejemplo.xls')
+#             wb.save('ejemplo.xls')
+#         except:
+#             pass
+#     else:
+#         try:
+#             if guardar==1:
+#                 guardar=0
+#
+#         except:
+#             pass
 
-###############################################################################################
-# Envio señales a Arduinos
-
+#Enviar al arduino
 def ACTUADORX(paquete): #Se inicia el nodo ACTUADORESPY(Actuadores python)
     rate = rospy.Rate(1000) #10 Hz
     if not rospy.is_shutdown():
@@ -420,8 +469,7 @@ def ACTUADORZ(paquete):
         ACTUADORZP.publish(hello_str)
         rate.sleep()
 
-###############################################################################################
-# Datos recibidos de la camara
+#Para recibir de la camara
 def callback(data):
     rospy.loginfo(data.data)
     global DisG
@@ -435,17 +483,32 @@ def callback2(data):
 def UObjeto():
     rate = rospy.Rate(1000)  # 100 Hz
     rate.sleep()
-
+    #rospy.spin()
 def UGripper():
     rate = rospy.Rate(1000)  # 100 Hz
     rate.sleep()
-
+    #rospy.spin()
+'''
+def talker(paquete):
+    pub = rospy.Publisher("ACTUADORZ", Float32, queue_size=10)
+    rospy.init_node("talker",anonymous=True)
+    rate = rospy.Rate(10) #10 Hz
+    if not rospy.is_shutdown():
+        hello_str = float(paquete)
+        rospy.loginfo(hello_str)
+        pub.publish(hello_str)
+        rate.sleep()
+'''
 
 if __name__ == '__main__':
-
+    app = QApplication(sys.argv)
+    GUI = ActuadorGUI()
     rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
     rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
     t1 = threading.Thread(target=Automatico)
+    #t1 = perpetualTimer(0.001,Automatico)
     t1.start()
+    # t1=RepeatedTimer(0.001, Automatico)
+    GUI.show()
     sys.exit(app.exec_())
 
