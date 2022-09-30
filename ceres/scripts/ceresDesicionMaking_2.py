@@ -382,10 +382,11 @@ def Automatico ():
                     ACTUADORX(X)
                     ACTUADORZ(Z)
                     ACTUADORY(Y)
+                    subprocess.Popen(['ceres/scripts/smc_linux/SmcCmd','--resume', '--speed', '1000'])
                     time.sleep(20)
+                    subprocess.Popen(['ceres/scripts/smc_linux/SmcCmd','--stop'])
                     print("continuar recorrido")
                     tratamiento = False
-                
 
             #(y,z,x)   
             cont=cont+1          
