@@ -357,7 +357,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 				procs.append(["PathReader", pathReader])
 			elif myapp.ui.verticalSlider.value()==4:
 				
-				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '1', str(myapp.ui.Diameter_SpinBox.value())]) 
+				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '0', str(myapp.ui.Diameter_SpinBox.value())]) 
 				procs.append(["PathGenerator", pathGenerator])			
 
 				

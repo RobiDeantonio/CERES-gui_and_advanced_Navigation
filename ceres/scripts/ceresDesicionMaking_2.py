@@ -12,6 +12,8 @@
 ###############################################################################################
 # Importations:
 #from turtle import delay
+from signal import pause
+from std_msgs.msg import String
 import rospy
 import datetime
 import time
@@ -19,7 +21,8 @@ from geometry_msgs.msg import Twist
 from ceres.msg import CeresRC
 from math import sqrt,cos,sin
 import sys
-
+global tratamiento
+tratamiento=False
 ###############################################################################################
 # Functions Definitions:
 # adquire: Initialize ROS Node and all topics subscribers/publishers.
@@ -27,6 +30,11 @@ def adquire():
     rospy.init_node('decisionMaking', anonymous=True)
     rospy.Subscriber("/ceres/RC", CeresRC, callbackRC)
     rospy.Subscriber("DistanciaGripper", Float32MultiArray, callback, queue_size=1, buff_size=268435456)
+    rospy.Subscriber("DistanciaObjeto", Float32MultiArray, callback2, queue_size=1, buff_size=268435456)
+    rospy.Subscriber("Jetson_TX1",String,callbackJet, queue_size=10)
+
+
+
 ###############################################################################################
 # callbackRC: receive RC Emergency Stop State to initiate/stop the sequence.
 def callbackRC(data):
@@ -39,6 +47,16 @@ def callbackRC(data):
 		if AU==False:
 			rospy.logwarn("[PathGenerator]Emergency Stop Activated !")
 		AU=True
+###############################################################################################
+# callbackJet: receive RC Emergency Stop State to initiate/stop the sequence.
+def callbackJet(data):
+	global Jet
+	Jet=data.data
+
+def callback2(data):
+    #rospy.loginfo(data.data)
+    global DisO
+    DisO=data.data
 ###############################################################################################
 # generatePath: generate a path according to the selection
 def STOPX(self):
@@ -226,6 +244,50 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+
+
+class EvacionDeObstaculos:
+    #obstacle es un vector de cordenadas [x,y,z,size], siendo size el tamaño del obstaculo
+    obstacle = []
+
+    def __init__(self, name):
+        self.name = name
+
+    def addObstacle(self, obstacle):
+        self.obstacle.append(obstacle)
+
+    def clearObstacle(self):
+        self.obstacle.clear()
+
+    def calcObstacle(self, x, y, z):
+        if self.obstacle==None:
+            print("There are not obstacles")
+        else:
+            sumretro=[0, 0, 0]
+            for o in self.obstacle:
+                try:
+                    sq = math.sqrt((o[0] - x) ** 2 + (o[1] - y) ** 2 + (o[2] - z) ** 2)
+                    print(sq)
+                    retro = (o[3] ** (200 - sq))
+                    # if((o[3] * (200 - sq))>0):
+                    #     retro = -(o[3] * (100 - sq))
+                    # else:
+                    #     retro=0
+                    
+                    sumretro = [np.sign(o[0] - x)*retro ,np.sign(o[1] - y)*retro ,np.sign(o[2] - z)*retro ]+sumretro # este depende del actuador y de la funcion de transferencia
+                except:
+                    sq = math.sqrt((o[0] - x) ** 2 + (o[1] - y) ** 2 + (o[2] - z) ** 2)
+                    print(sq)
+                    retro = (2 ** (200 - sq))
+                    # if((100 * (200 - sq))>0):
+                    #     retro = -(100 * (100 - sq))
+                    # else:
+                    #     retro=0
+                    sumretro = [np.sign(o[0] - x)*retro ,np.sign(o[1] - y)*retro ,np.sign(o[2] - z)*retro ]+sumretro # este depende del actuador y de la funcion de transferencia
+                return sumretro
+
+
+
 ###############################################################################################
 # Controlador: Funcion para establecer las velocidades de los actuadores
 
@@ -248,9 +310,9 @@ class Controlador:
         self.Yk=y-e
         Xek = np.matmul(self.G, self.Xek1) + (self.H*self.Uk1) + \
               np.matmul(self.Ke, (self.Yk1 - np.matmul(self.C, self.Xek1)))
-        print(Xek)
-        print(self.Uk)
-        print(self.Yk)
+        #print(Xek)
+        #print(self.Uk)
+        #print(self.Yk)
         #print(self.K)
         #self.Uk = -1*(np.matmul(self.K, np.array([[self.Yk]])))
         self.Uk = -1 * (np.matmul(self.K, Xek))
@@ -262,20 +324,20 @@ class Controlador:
         self.Xek=xestimado
 
 
-ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-10]]),np.array([[1]])
+ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-2]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-10]]),np.array([[1]])
+ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-2]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-10]]),np.array([[1]])
+ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-2]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
 
 ###############################################################################################
 # Automatico: secuencia automatica para recorrido de actuadores en "U"
 
 def Automatico ():
-    global stop_threads, DisG, DisO, DisO2, DisSave, GPSSave, situacion ,Ez
+    global stop_threads, DisG, DisO, DisO2, DisSave, GPSSave, situacion ,Ez, X,Y,Z,tratamiento
 
-    DisO2 = [[450, 117, 1000], [427, 304, 1883], [1500, 180, 300], [1500, 180, 300]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
+    DisO2 = [[-250, -708, 600], [250, -685, 600], [270, -573, 1630], [-301, -604, 1630]]  # Coordenadas de origen , y 3 trayectorias para recorrido en U. coordenadas en pixeles
     DisSave = []  ##variable para guardar backup de coordenadas
     estado = []   ## variable para guardar estado de la planta por mdeio de la jetson
     ##situacion= jetson   ## señal de deteccion de la jetson
@@ -290,108 +352,180 @@ def Automatico ():
     # inicializacion variables
 
     contador=1
+    cont=0
     guardar=0
     Tinicio=time.time()
     TiControl=Tinicio
     TiControlY = Tinicio
     TiControlX = Tinicio
     Angulo=math.radians(35)##42 # Angulo de posicionamiento de la camara primesense en el ceres
-
+    X=1
+    Y=1
+    Z=1
+    ACTUADORX(X)
+    ACTUADORZ(Z)
+    ACTUADORY(Y)
     ###############################################################################################
     # ciclo de deteccion en U
+    d =EvacionDeObstaculos("arbol")
+    evadir=[0,0,0]
     while (stop_threads):
-        #time.sleep(0.001)
+        Jet="hola"
         if stop_threads:
-            
-            DisO2 = [450, 117, 1000]
-            Cor=0
-
-            if Cor==1 or DisG[0] in range(420, 480) and DisG[1] in range(97, 137) and DisG[2] in range(980, 1020) : ### si Cor es 1   o   el griper se encuentra cerca a las cordenadas origen
-
-                global X, Y, Z
-                X = -1000
-                y = 0
-                z = 0
-                Cor = 1
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-                if DisG[0] in range(400, 450) and DisG[1] in range(280, 320) and DisG[2] in range(1680, 1720) :### si el griper se encuentra cerca a las cordenadas 2
-                    Cor=2
-                        
-            elif Cor==2:
-                X = 0
-                y = 0
-                z = 0
-                Cor = 1
-                ACTUADORX(X)
-                ACTUADORY(Y)
-                ACTUADORZ(Z)
-                STOPX()
-                STOPY()
-                STOPZ()
-                rospy.loginfo("end process XYZ")
-                stop_threads = False
-            #elif contador < 110:
-            #    DisO2 = [180, 302, 1700]
-            #elif contador < 140:
-            #    DisO2 = [130, 118, 1000]
-            
-            #elif contador > 170:
-
-                #rospy.loginfo("[PathGenerator] ALL is finished ")
+            if Jet=="tizon":
+                tratamiento = True
+                while(tratamiento):
+                    print("en tratamiento")
+                    X=0
+                    Y=0
+                    Z=0
+                    ACTUADORX(X)
+                    ACTUADORZ(Z)
+                    ACTUADORY(Y)
+                    time.sleep(20)
+                    print("continuar recorrido")
+                    tratamiento = False
                 
-                #STOPX()
-                #STOPY()
-                #STOPZ()
-                #print("end process XYZ")
-                #stop_threads = False
-                #contador=0
+
+            #(y,z,x)   
+            cont=cont+1          
+            
+            if cont<80:
+                DisO2 = [-250, -708, 600]# Coordenada 1 parte superior izquierda(-300, -708, 600)     (y,z,x)  
+            elif cont==80:
+                X=0
+                Y=0
+                Z=0
+                ACTUADORX(X)
+                ACTUADORZ(Z)
+                ACTUADORY(Y)
+
+            elif cont<140:                
+                DisO2 = [250, -685, 600]# Coordenada 2 parte superior izquierda(250, -685, 600)     
+            elif cont ==140:
+                X=0
+                Y=0
+                Z=0
+                ACTUADORX(X)
+                ACTUADORZ(Z)
+                ACTUADORY(Y)            
+            elif cont<300:
+                 DisO2 = [270, -573, 1400]# Coordenada 1 parte superior izquierda(270, -573, 1630) 
+            elif cont ==300:
+                X=0
+                Y=0
+                Z=0
+                ACTUADORX(X)
+                ACTUADORZ(Z)
+                ACTUADORY(Y)  
+           
+            elif cont<400:
+                 DisO2 = [-250, -604, 1400]# Coordenada 1 parte superior izquierda(-301, -604, 1630) 
+            elif cont<400:
+                rospy.loginfo("[PathGenerator] ALL is finished ")
+                
+                print("end process XYZ")
+                
+                X=0
+                Y=0
+                Z=0
+                ACTUADORX(X)
+                ACTUADORZ(Z)
+                ACTUADORY(Y)
+                stop_threads = False                
+                
 
 
-        #if stop_threads:
-            #(y,z,x)
-        #    if Contador<2000:
-        #       DisO2 = [75, -650, 1600]
-        #    elif Contador<4000:
-        #        DisO2 = [427, 304, 1883]
-        #    elif Contador < 6000:
-        #        DisO2 = [210, 302, 1873]
-        #    elif Contador < 8000:
-        #        DisO2 = [130, 118, 100]
-        #    elif Contador == 2000:
-        #        rospy.loginfo("[PathGenerator] ALL is finished ")
-        #        stop_threads = False
-        #        Contador=0
-###############################################################################################
-    # deteccion de enfermedad en jetson
-            #if (mala):
-            #   DisSave.append(DisG)
-            #    GPSSave.append(GPSActual)
-            #    estado.append(situacion)
+        # if stop_threads:
+        #     if Jet=="tizon":
+        #         tratamiento = True
+        #         while(tratamiento):
+        #             print("en tratamiento")
+        #             X=0
+        #             Y=0
+        #             Z=0
+        #             ACTUADORX(X)
+        #             ACTUADORZ(Z)
+        #             ACTUADORY(Y)
+        #             time.sleep(20)
+        #             print("continuar recorrido")
+        #             tratamiento = False
+                
 
-            #    if situacion == "a":
-            #        print("matar maleza")
-            #    elif situacion == "b":
-            #        print("regar planta")
-            #    elif situacion == "c":
-            #        print("fumigar planta")
+        #     #(y,z,x)   
+        #     cont=cont+1          
+            
+        #     if cont<80:
+        #         DisO2 = [-250, -708, 600]# Coordenada 1 parte superior izquierda(-300, -708, 600)       
+        #     elif cont==80:
+        #         X=0
+        #         Y=0
+        #         Z=0
+        #         ACTUADORX(X)
+        #         ACTUADORZ(Z)
+        #         ACTUADORY(Y)
+
+        #     elif cont<140:                
+        #         DisO2 = [250, -685, 600]# Coordenada 2 parte superior izquierda(250, -685, 600)     
+        #     elif cont ==140:
+        #         X=0
+        #         Y=0
+        #         Z=0
+        #         ACTUADORX(X)
+        #         ACTUADORZ(Z)
+        #         ACTUADORY(Y)            
+        #     elif cont<210:
+        #          DisO2 = [270, -573, 1630]# Coordenada 1 parte superior izquierda(270, -573, 1630) 
+        #     elif cont ==210:
+        #         X=0
+        #         Y=0
+        #         Z=0
+        #         ACTUADORX(X)
+        #         ACTUADORZ(Z)
+        #         ACTUADORY(Y)  
+           
+        #     elif cont<280:
+        #          DisO2 = [-250, -604, 1630]# Coordenada 1 parte superior izquierda(-301, -604, 1630) 
+        #     elif cont<350:
+        #         rospy.loginfo("[PathGenerator] ALL is finished ")
+                
+        #         print("end process XYZ")
+                
+        #         X=0
+        #         Y=0
+        #         Z=0
+        #         ACTUADORX(X)
+        #         ACTUADORZ(Z)
+        #         ACTUADORY(Y)
+        #         stop_threads = False                
+                
+
+
 
     ###############################################################################################
     # calculo actuadores xyz
 
             
 
-            O = DisO2[1]-240
+            O = DisO[1]-240
             G = DisG[1]-240
             OKA = XX.getDistance(O , 0.005)
             GKA = YY.getDistance(G , 0.005)
             OKAZ=((OKA*DisO[2]/520))
             GKAZ=((GKA*DisG[2]/520))
             OKA=(OKAZ*math.cos(Angulo))-(DisO[2]*math.sin(Angulo))
-            #OKA=DisO2[1]
+            ObjetoZ=OKA
+            OKA=DisO2[1]#Se omite ya que se esta usando directamente la distancia en xyz y no se debe encontrar en la camara
             GKA = (GKAZ * math.cos(Angulo)) - (DisG[2] * math.sin(Angulo))
-            print(OKA)
+            GriperZ=GKA
+            #print(OKA)
+            #######################################################################evacion de obstaculos
+            
+            #d.addObstacle([0, -690, 590, 1.3])
+            
+
+            
+
             if(guardar!=1):
                 ControlZ.setXek(np.array([[GKA]]))
             #E = (-10 * 0.66913061 * ((OKA - GKA)))
@@ -401,12 +535,13 @@ def Automatico ():
                 Ez = ControlZ.Uk[0,0]
                 TiControl = TtControl
             #print(-TiControl+TtControl)
-            if -40<(Ez)<40:
+            print(evadir)
+            if -40<(Ez+evadir[1])<40:
                 ACTUADORZ(0)  #
-            elif Ez>9000 or Ez<-9000:
-                ACTUADORZ(np.sign(Ez)*9000)
+            elif (Ez+evadir[1])>3000 or (Ez+evadir[1])<-3000:
+                ACTUADORZ(np.sign(Ez+evadir[1])*3000)
             else:
-                ACTUADORZ(Ez)  #
+                ACTUADORZ(Ez+evadir[1])  #
             #sheet.write(Contador, 0, OKA)
             #sheet.write(Contador, 1, Ez)
             #E=XX.getDistance(E,0.005)
@@ -416,17 +551,25 @@ def Automatico ():
             contador=contador+1
             #print((O - G))
 
-
-            O = DisO2[0]-320
+            #O es para objeto y G para gripper
+            #Actuador Y
+            O = DisO[0]-320
             G = DisG[0]-320
             #print(-(O - G))
+            #Filtro distancia
             OKA = XXX.getDistance(O, 0.005)
             GKA = YYY.getDistance(G, 0.005)
-            #OKA=DisO2[0]
+            OKA = ((OKA * DisO[2] / 520))
+            ObjetoY=OKA
+            OKA=DisO2[0]
+
 
             #OKAZ = ((OKA * DisO[0] / 520)) -----------------
-            #GKAZ = ((GKA * DisG[0] / 520))
-
+            
+            GKA = ((GKA * DisG[2] / 520))
+            
+            GriperY=GKA
+            
             #sheet.write(Contador, 3, OKA)
             #E=(-4 * (OKA - GKA))
             TtControl = time.time()
@@ -434,42 +577,56 @@ def Automatico ():
                 ControlY.control(GKA, round(OKA/100)*100)
                 Ey = ControlY.Uk[0, 0]
                 TiControlY = TtControl
-            if -40 < (Ey) < 40:
+            if -40 < (Ey+evadir[0]) < 40:
                 ACTUADORY(0)  #
-            elif Ey > 9000 or Ey < -9000:
-                ACTUADORY(np.sign(Ey) * 9000)
+            elif (Ey+evadir[0]) > 3000 or (Ey+evadir[0]) < -3000:
+                ACTUADORY(np.sign(Ey+evadir[0]) * 3000)
             else:
-                ACTUADORY(Ey)  #
+                ACTUADORY(Ey+evadir[0])  #
             #sheet.write(Contador, 4, Ey)
             #sheet.write(Contador, 5, GKA)
 
-
-            O = DisO2[2]
+            #Actuador X
+            O = DisO[2]
             G = DisG[2]
             #print(-(O - G))
             OKA = XXXX.getDistance(O, 0.005)
             GKA = YYYY.getDistance(G, 0.005)
             OKA=OKA*math.cos(Angulo)+OKAZ*math.sin(Angulo)
-            #OKA=DisO2[2]
+            ObjetoX=OKA
+            OKA=DisO2[2]
             GKA=GKA*math.cos(Angulo)+GKAZ*math.sin(Angulo)
-            print(OKA)
-            print(GKA)
+            GriperX=GKA
+####################################################################################################33
+            d.addObstacle([ObjetoY, ObjetoZ, ObjetoX, 1.05])
+            #print(OKA)
+            #print(GKA)
             #sheet.write(Contador, 6, OKA)
             #E=(-10 * 0.74314482*(OKA - GKA))#1
             TtControl = time.time()
+           
+
+            
             if (-TiControlX + TtControl) > 0.02:
                 ControlX.control(GKA, round(OKA/100)*100)
                 Ex = ControlX.Uk[0, 0]
                 TiControlX = TtControl
             #sheet.write(Contador, 7, Ex)
             #sheet.write(Contador, 8, GKA)
-            if -40 < (Ex) < 40:
+            if -40 < (Ex+evadir[2]) < 40:
                 ACTUADORX(0)  #
-            elif Ex > 9000 or Ex < -9000:
-                ACTUADORX(np.sign(Ex) * 9000)
+            elif (Ex+evadir[2]) > 3000 or (Ex+evadir[2]) < -3000:
+                ACTUADORX(np.sign(Ex+evadir[2]) * 3000)
             else:
-                ACTUADORX(Ex)  #
+                ACTUADORX(Ex+evadir[2])  #
             guardar = 1
+
+            evadir=d.calcObstacle(GriperY, GriperZ, GriperX)
+            print("evadir y,z,x",evadir)
+            print("griper y,z,x ",GriperY,",", GriperZ,",", GriperX)
+            print("Obstaculo y,z,x ",ObjetoY,",", ObjetoZ,",", ObjetoX)
+            d.clearObstacle()
+
         else:
             try:
                 if guardar==1:
@@ -581,10 +738,7 @@ if __name__=='__main__':
   #Automatico()
   t1.start()
   stop_threads = False
-  STOPX()
-  STOPY()
-  STOPZ()
-  
+    
   rospy.loginfo("[PathGenerator] ALL is finished asdasd")
 
 

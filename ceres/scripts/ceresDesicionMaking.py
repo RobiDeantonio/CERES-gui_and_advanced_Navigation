@@ -423,7 +423,7 @@ ControlZ=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.a
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
 ControlX=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
-ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-15]]),np.array([[1]])
+ControlY=Controlador(np.array([[1]]),np.array([[-0.001]]),np.array([[-0.1]]),np.array([[1]])
                      ,np.array([[0]]),0)#Con K=90 funciona muy bien -939.4591
 
 
@@ -486,7 +486,7 @@ def Automatico ():
 
     ###############################################################################################
     # calculo actuadores xyz
-
+            #Actuador Z
             O = DisO[1]-240
             G = DisG[1]-240
             OKA = XX.getDistance(O , 0.005)
@@ -496,7 +496,8 @@ def Automatico ():
             OKA=(OKAZ*math.cos(Angulo))-(DisO[2]*math.sin(Angulo))
             OKA=DisO2[1]
             GKA = (GKAZ * math.cos(Angulo)) - (DisG[2] * math.sin(Angulo))
-            print(OKA)
+            #print(OKA)
+            
             if(guardar!=1):
                 ControlZ.setXek(np.array([[GKA]]))
             #E = (-10 * 0.66913061 * ((OKA - GKA)))
@@ -521,16 +522,19 @@ def Automatico ():
             Contador=Contador+1
             #print((O - G))
 
-
+            #O es para objeto y G para gripper
+            #Actuador Y
             O = DisO[0]-320
             G = DisG[0]-320
             #print(-(O - G))
+            #Filtro distancia
             OKA = XXX.getDistance(O, 0.005)
             GKA = YYY.getDistance(G, 0.005)
             OKA=DisO2[0]
 
+
             #OKAZ = ((OKA * DisO[0] / 520)) -----------------
-            #GKAZ = ((GKA * DisG[0] / 520))
+            GKA = ((GKA * DisG[0] / 520))
 
             #sheet.write(Contador, 3, OKA)
             #E=(-4 * (OKA - GKA))
@@ -548,7 +552,7 @@ def Automatico ():
             #sheet.write(Contador, 4, Ey)
             #sheet.write(Contador, 5, GKA)
 
-
+            #Actuador X
             O = DisO[2]
             G = DisG[2]
             #print(-(O - G))
