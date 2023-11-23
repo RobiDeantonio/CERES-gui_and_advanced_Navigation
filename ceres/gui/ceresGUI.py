@@ -316,7 +316,7 @@ class CeresApplication(QtWidgets.QMainWindow):
 
 	def RETROCEDERXX(self):
 		global X
-		X = X - 100
+		X = X - 1000
 		ACTUADORX(X)
 	def RETROCEDERYY(self):
 		global Y
@@ -356,19 +356,27 @@ class CeresApplication(QtWidgets.QMainWindow):
 				pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresPathReader.py', myapp.path[0], '__name:=ceres_PathReader']) 
 				procs.append(["PathReader", pathReader])
 			elif myapp.ui.verticalSlider.value()==4:
-				#pass
-				#poseController = subprocess.Popen(['rosrun', 'ceres', 'ceresController.py', '__name:=ceres_PoseController']) 
-				#procs.append(["poseController", poseController])
-				#pathReader = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking.py', myapp.path[0], '__name:=ceres_PathReader']) 
-				#procs.append(["PathReader", pathReader])
-				PathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '0', str(myapp.ui.Diameter_SpinBox.value())]) 
-				procs.append(["PathGenerator", PathGenerator])
+				
+				pathGenerator = subprocess.Popen(['rosrun', 'ceres', 'ceresDesicionMaking_2.py', '0', str(myapp.ui.Diameter_SpinBox.value())]) 
+				procs.append(["PathGenerator", pathGenerator])			
+
+				
 		else:
 			rospy.logerr("[GUI] A test sequence is already started!")
 			
 	def stopPathGenerator(self):
-		global myapp, procs
+		global myapp, procs, X, Y, Z,stop_threads
 		flag=True
+		stop_threads=False
+		global Z,X,Y
+		Z = 0
+		Y = 0
+		X = 0
+
+		ACTUADORZ(Z)
+		ACTUADORX(X)
+		ACTUADORY(Y)
+		
 		while(flag):
 			flag=False
 			for i in procs:
